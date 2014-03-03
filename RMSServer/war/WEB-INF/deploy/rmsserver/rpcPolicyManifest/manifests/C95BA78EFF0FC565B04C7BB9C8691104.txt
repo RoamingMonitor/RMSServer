@@ -1,0 +1,2 @@
+serviceClass: com.gmail.utexas.rmsystem.client.GreetingService
+path: 6F98E500AE09652EEFFCBFB143E4CC24.gwt.rpc
