@@ -1,10 +1,10 @@
-package com.gmail.utexas.rmsystem.algorithms;
+package rmsystem2014;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class TwoLockQueue {
+public class TwoLockQueue{
 
   ReentrantLock enqLock, deqLock;
   Condition notEmpty, notFull;
@@ -12,6 +12,20 @@ public class TwoLockQueue {
   Entry head;
   Entry tail;
   int capacity;
+  
+  protected class Entry {
+    public int value;
+    public Entry next;
+    public Entry(){
+    	value = 0;
+    	next = null;
+    }
+    public Entry(int x) {
+      value = x;
+      next = null;
+    }
+  }
+  
   public TwoLockQueue(int capacity) {
     this.capacity = capacity;
     this.head = new Entry();
@@ -96,17 +110,5 @@ public class TwoLockQueue {
 		  deqLock.unlock();
 	  }
 	  return out;
-  }
-  protected class Entry {
-    public int value;
-    public Entry next;
-    public Entry(){
-    	value = 0;
-    	next = null;
-    }
-    public Entry(int x) {
-      value = x;
-      next = null;
-    }
   }
 }
