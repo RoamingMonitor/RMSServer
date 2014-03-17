@@ -7,6 +7,7 @@ import javax.servlet.http.*;
 
 import java.util.logging.Logger;
 
+import com.gmail.utexas.rmsystem.models.Settings;
 import com.google.gson.Gson;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.Ref;
@@ -20,7 +21,7 @@ public class SettingsServlet extends HttpServlet{
         ObjectifyService.register(Settings.class);
     }
 
-    @Override
+
     public void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
 
@@ -55,7 +56,7 @@ public class SettingsServlet extends HttpServlet{
         Settings settings = gson.fromJson(content, Settings.class);
         ofy().save().entity(settings).now();
 
-        resp.setContentType("text/plain");;        
+        resp.setContentType("text/plain");       
     	resp.getWriter().println("Settings successfully saved.");
     }
 }
