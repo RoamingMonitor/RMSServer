@@ -1,4 +1,4 @@
-package com.gmail.utexas.rmsystem;
+package com.gmail.utexas.rmsystem.models;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

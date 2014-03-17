@@ -29,6 +29,48 @@
         <servlet-name>settings</servlet-name>
         <url-pattern>/settings</url-pattern>
     </servlet-mapping>
+    
+    
+    <servlet>
+        <servlet-name>register</servlet-name>
+        <servlet-class>com.gmail.utexas.rmsystem.RegistrationServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>register</servlet-name>
+        <url-pattern>/register</url-pattern>
+    </servlet-mapping>
+    
+    
+    <servlet>
+        <servlet-name>status</servlet-name>
+        <servlet-class>com.gmail.utexas.rmsystem.StatusServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>status</servlet-name>
+        <url-pattern>/status</url-pattern>
+    </servlet-mapping>
+    
+    
+    <servlet>
+        <servlet-name>manual_status</servlet-name>
+        <servlet-class>com.gmail.utexas.rmsystem.ManualStatusServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>manual_status</servlet-name>
+        <url-pattern>/manual_status</url-pattern>
+    </servlet-mapping>
+    
+    
+    <servlet>
+        <servlet-name>alert</servlet-name>
+        <servlet-class>com.gmail.utexas.rmsystem.AlertServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>alert</servlet-name>
+        <url-pattern>/alert</url-pattern>
+    </servlet-mapping>
+    
+    
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
