@@ -1,5 +1,4 @@
-package com.gmail.utexas.rmsystem.algorithms;
-
+package rmsystem2014;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -32,29 +31,30 @@ public class AccelerometerAlgorithm {
 	}
 	//called when there is new accelerometer data to put into the buffer
 	//return true if successfully processed
-	public boolean processInput(int data){
-		if(dataCount == BUFSIZE){
-			System.out.println("Buffer is full!");
-			return false;
-		}
-		buf.add(bufIn,data);
-		bufIn = (bufIn + 1) % BUFSIZE;
-		dataCount++;
-		return true;
-	}
-	//called at set frequency to analyze the next data element in the buffer
-	public boolean processNextElement(){
-		if(dataCount == 0){
-			System.out.println("Buffer is empty!");
-			return false;
-		}
-		processData(buf.get(bufOut));
-		bufOut = (bufOut + 1) % BUFSIZE;
-		dataCount--;
-		return true;
-	}
+//	public boolean processInput(int data){
+//		if(dataCount == BUFSIZE){
+//			System.out.println("Buffer is full!");
+//			return false;
+//		}
+//		buf.add(bufIn,data);
+//		bufIn = (bufIn + 1) % BUFSIZE;
+//		dataCount++;
+//		return true;
+//	}
+//	//called at set frequency to analyze the next data element in the buffer
+//	public boolean processNextElement(){
+//		if(dataCount == 0){
+//			System.out.println("Buffer is empty!");
+//			return false;
+//		}
+//		processData(buf.get(bufOut));
+//		bufOut = (bufOut + 1) % BUFSIZE;
+//		dataCount--;
+//		return true;
+//	}
 	//takes in element from array and handles triggering of events due to data
 	public void processData(int data){
+		bufOut++;	//used for debugging where triggers occur (remove when done testing)
 		
 		//discard vals that are too low
 		if(data <= TOOLOW){
@@ -137,7 +137,6 @@ public class AccelerometerAlgorithm {
 		//handle walking alert to phone app
 		System.out.println("Send walking alert!");
 	}
-
 //	public static void main(String[] args) throws FileNotFoundException{
 //		//maybe some init function?
 //		boolean run = true;
@@ -154,5 +153,4 @@ public class AccelerometerAlgorithm {
 //		}
 //		
 //	}
-
 }

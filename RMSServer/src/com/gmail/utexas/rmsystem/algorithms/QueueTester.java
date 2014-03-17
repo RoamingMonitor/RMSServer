@@ -1,4 +1,4 @@
-package com.gmail.utexas.rmsystem.algorithms;
+package rmsystem2014;
 
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
@@ -19,6 +19,7 @@ public class QueueTester {
 			que_ = que;
 		}
 		
+		@Override
 		public void run() {
 			Random ran = new Random();
 			try {
@@ -99,10 +100,10 @@ public class QueueTester {
 		}
 	}
 	
-//	public static void main(String[] argc) {
-//		TwoLockQueue queue = new TwoLockQueue(CAPACITY);
-//		ExecutorService pool = Executors.newCachedThreadPool();
-//		for (int i = 0; i < 4; ++i) pool.submit(new TestThread(queue));
-//		pool.shutdown();
-//	}
+	public static void main(String[] argc) {
+		TwoLockQueue queue = new TwoLockQueue(CAPACITY);
+		ExecutorService pool = Executors.newCachedThreadPool();
+		for (int i = 0; i < 4; ++i) pool.submit(new TestThread(queue));
+		pool.shutdown();
+	}
 }
