@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.gmail.utexas.rmsystem.algorithms.AccelerometerAlgorithm;
-import com.gmail.utexas.rmsystem.algorithms.Test.PullQueue;
-import com.gmail.utexas.rmsystem.algorithms.Test.PushQueue;
+import com.gmail.utexas.rmsystem.algorithms.AlgorithmQueue.PullQueue;
+import com.gmail.utexas.rmsystem.algorithms.AlgorithmQueue.PushQueue;
 
 public class AlgorithmsServlet extends HttpServlet{
 	

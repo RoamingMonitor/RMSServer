@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.gmail.utexas.rmsystem.models.Device;
-import com.gmail.utexas.rmsystem.models.User;
+import com.gmail.utexas.rmsystem.models.RMSUser;
 import com.google.gson.Gson;
 import com.googlecode.objectify.ObjectifyService;
 
@@ -20,7 +20,7 @@ public class RegistrationServlet extends HttpServlet{
 
 	Logger log = Logger.getLogger(RegistrationServlet.class.getName());
 	static {
-		ObjectifyService.register(User.class);
+		ObjectifyService.register(RMSUser.class);
 		ObjectifyService.register(Device.class);
 	}
 
@@ -40,7 +40,7 @@ public class RegistrationServlet extends HttpServlet{
 		String content = sb.toString();
 		log.info(content);
 
-		User user = gson.fromJson(content, User.class);
+		RMSUser user = gson.fromJson(content, RMSUser.class);
 		ofy().save().entity(user).now();
 		resp.setContentType("text/plain");
 		

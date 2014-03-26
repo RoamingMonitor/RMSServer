@@ -6,7 +6,7 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Test {
+public class AlgorithmQueue {
 	final static int CAPACITY = 16300;
 	static TwoLockQueue q = new TwoLockQueue(CAPACITY);
 	
