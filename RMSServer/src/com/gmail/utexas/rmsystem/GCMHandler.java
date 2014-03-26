@@ -11,6 +11,7 @@ import java.net.HttpURLConnection;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.gmail.utexas.rmsystem.models.Device;
@@ -21,7 +22,7 @@ import com.googlecode.objectify.ObjectifyService;
 
 public class GCMHandler {
 	private final static String server_key = "AIzaSyAO423ysTxCFWlNtllk-Ms2aQP5UJaBYAs";
-	static Logger log = Logger.getAnonymousLogger();
+	static Logger log = Logger.getLogger(GCMHandler.class.getName());
 
 	static {
 		ObjectifyService.register(Device.class);
@@ -30,9 +31,7 @@ public class GCMHandler {
 
 	public static String sendToApp(String msg, String deviceID) throws IOException{
 		String resp = "";
-
-		Gson gson = new Gson();
-		GCMHandler handler = new GCMHandler(); 		
+    	log.setLevel(Level.INFO);
 		
 		String message = createGSMPost(deviceID, msg);
 
@@ -70,7 +69,7 @@ public class GCMHandler {
 		}
 
 		if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-			log.info("Success!");             		
+			log.info("Success!");    		
 		} else {
 			log.info(connection.getResponseMessage());
 		}

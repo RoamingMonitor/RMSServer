@@ -1,8 +1,11 @@
-package rmsystem2014;
+package com.gmail.utexas.rmsystem.algorithms;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Logger;
+
+import com.gmail.utexas.rmsystem.ManualStatusServlet;
 
 public class AccelerometerAlgorithm {
 	private ArrayList<Integer> buf;
@@ -19,6 +22,8 @@ public class AccelerometerAlgorithm {
 	private int bufIn, bufOut, dataCount, lowCount, highCount, stepCount, normCount;
 	private boolean prelimOn;
 	private BioAlgorithm bio;
+	
+	Logger log = Logger.getLogger(AccelerometerAlgorithm.class.getName());
 
 	public AccelerometerAlgorithm() {
 		buf = new ArrayList<Integer>();
@@ -29,29 +34,7 @@ public class AccelerometerAlgorithm {
 		bio = new BioAlgorithm();
 		prelimOn = false;
 	}
-	//called when there is new accelerometer data to put into the buffer
-	//return true if successfully processed
-//	public boolean processInput(int data){
-//		if(dataCount == BUFSIZE){
-//			System.out.println("Buffer is full!");
-//			return false;
-//		}
-//		buf.add(bufIn,data);
-//		bufIn = (bufIn + 1) % BUFSIZE;
-//		dataCount++;
-//		return true;
-//	}
-//	//called at set frequency to analyze the next data element in the buffer
-//	public boolean processNextElement(){
-//		if(dataCount == 0){
-//			System.out.println("Buffer is empty!");
-//			return false;
-//		}
-//		processData(buf.get(bufOut));
-//		bufOut = (bufOut + 1) % BUFSIZE;
-//		dataCount--;
-//		return true;
-//	}
+	
 	//takes in element from array and handles triggering of events due to data
 	public void processData(int data){
 		bufOut++;	//used for debugging where triggers occur (remove when done testing)
@@ -117,7 +100,6 @@ public class AccelerometerAlgorithm {
 		}
 	}
 	public void resetData(){
-		//shit fucked up and you want a clean start
 		System.out.println("Reseting accelerometer algorithm data");
 		highCount=lowCount=stepCount=normCount=0;
 		prelimOn = false;
@@ -136,21 +118,6 @@ public class AccelerometerAlgorithm {
 	public void sendWalkingAlert(){
 		//handle walking alert to phone app
 		System.out.println("Send walking alert!");
+		log.info("Send walking alert!");
 	}
-//	public static void main(String[] args) throws FileNotFoundException{
-//		//maybe some init function?
-//		boolean run = true;
-//		String filename = "data\\jessica_walking_paperclip1.txt";
-//		//String filename = "data\\jessica_lying_paperclip1.txt";
-//		AccelerometerAlgorithm test = new AccelerometerAlgorithm();	
-//		Scanner scan = new Scanner(new FileReader(filename));
-//		while(run && scan.hasNextInt()){
-//			run = test.processInput(scan.nextInt());
-//		}
-//		run = true;
-//		while(run){
-//			run = test.processNextElement();
-//		}
-//		
-//	}
 }

@@ -1,4 +1,4 @@
-package rmsystem2014;
+package com.gmail.utexas.rmsystem.algorithms;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;

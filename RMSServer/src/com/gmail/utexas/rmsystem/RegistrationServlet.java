@@ -4,6 +4,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServlet;
@@ -17,12 +18,14 @@ import com.googlecode.objectify.ObjectifyService;
 
 public class RegistrationServlet extends HttpServlet{
 
-	Logger log = Logger.getAnonymousLogger();
+	Logger log = Logger.getLogger(RegistrationServlet.class.getName());
 	static {
 		ObjectifyService.register(User.class);
+		ObjectifyService.register(Device.class);
 	}
 
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    	log.setLevel(Level.INFO);
 		Gson gson = new Gson();
 		StringBuilder sb = new StringBuilder();
 		BufferedReader reader = req.getReader();
@@ -50,12 +53,12 @@ public class RegistrationServlet extends HttpServlet{
 	    	resp.getWriter().println("Invalid Device ID.");
 	    	resp.setStatus(400);
 		}
-
+		
 	}
 
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		// For debugging purposes
+		// TODO: For debugging purposes, delete later
 		String msg = "hi"; 
 		GCMHandler.sendToApp(msg, "APA91bG8wRqLDdSZ06oPxsKsxbI8RFufD1sw_Bi2WlNcgx4kt_nK0DrlLit3zTsQEHoeEIzNPDBehuG3J8JA-ncQWMZY5KvIQK9BVJUUcvOc4vOeCtBYg8SYwbShQVsg1DhSZbOd2YcjCVW51th6vI959El52vHbIw");
 	}

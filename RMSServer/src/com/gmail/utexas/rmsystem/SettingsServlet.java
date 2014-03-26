@@ -16,15 +16,13 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 
 public class SettingsServlet extends HttpServlet{
 
-    Logger log = Logger.getAnonymousLogger();
+	Logger log = Logger.getLogger(SettingsServlet.class.getName());
 	static {
         ObjectifyService.register(Settings.class);
     }
 
 
-    public void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
-
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     	log.info(req.getQueryString());    	
     	String id = req.getParameter("id");
     	log.info(id);
