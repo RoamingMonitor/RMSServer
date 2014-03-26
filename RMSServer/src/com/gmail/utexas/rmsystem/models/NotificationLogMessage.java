@@ -1,16 +1,18 @@
 package com.gmail.utexas.rmsystem.models;
 
 public class NotificationLogMessage {
-		public String messageTitle;
-		public String dateAndTime;
-		public String messageBody;
+		private String messageTitle;
+		private String dateAndTime;
+		private String messageBody;
+		private String alertType;
 		
 		public NotificationLogMessage(){} //Empty Constructor used for testing
 		
-		public NotificationLogMessage(String title, String date, String body){
+		public NotificationLogMessage(String title, String date, String body, String type){
 			messageTitle = title;
 			dateAndTime = date;
 			messageBody = body;			
+			alertType = type;
 		}
 		
 
@@ -31,6 +33,10 @@ public class NotificationLogMessage {
         {
             this.messageBody = messageBody;
         }
+
+		public void setAlertType(String type) {
+			this.alertType = type;
+		}
          
         /*********** Get Methods ****************/
          
@@ -48,4 +54,8 @@ public class NotificationLogMessage {
         {
             return this.messageBody;
         }
+
+		public String getAlertType() {
+			return alertType;
+		}
 }

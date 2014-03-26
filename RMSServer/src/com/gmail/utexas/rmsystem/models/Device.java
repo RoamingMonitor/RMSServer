@@ -20,7 +20,7 @@ public class Device {
 	public Device(String deviceID, boolean status, String address){
 		this.deviceID = deviceID;
 		this.status = status;		
-		this.setAddress(address);
+		this.address = address;
 	}
 	
 	public void setStatus(boolean status){
@@ -48,7 +48,9 @@ public class Device {
 	}
 
 	public void addAppIDs(String appID) {
-		appIDs.add(appID);
+		if(!appIDs.contains(appID)){
+			appIDs.add(appID);
+		}
 	}
 
 }

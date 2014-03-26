@@ -14,19 +14,18 @@ import com.google.gson.Gson;
 
 public class AlertServlet extends HttpServlet{
 	
-	Logger log = Logger.getAnonymousLogger();
 
-	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {		
-		GCMHandler.sendToApp(createLogMessage(), "fake_device_id");
+	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		GCMHandler.sendToApp(LogMessageHandler.createMessage(LogMessageHandler.M_APP, "sleepwalking"), "fake_device_id");		
 	}
 	
 	
-	public String createLogMessage(){
+	public String createFakeLogMessage(){
 		Date date = new Date();
 		SimpleDateFormat ft = new SimpleDateFormat ("EEE, MM/dd h:mm a");
 		String currentTime = ft.format(date);
 		
-		NotificationLogMessage message = new NotificationLogMessage("Sleepwalking", currentTime, "");
+		NotificationLogMessage message = new NotificationLogMessage("Sleepwalking", currentTime, "", "alarm");
 		Gson gson = new Gson();		
 		String msg = "\"logMessage\":"+gson.toJson(message);		
 		return msg;

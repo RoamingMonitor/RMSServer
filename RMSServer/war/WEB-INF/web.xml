@@ -69,11 +69,34 @@
         <servlet-name>alert</servlet-name>
         <url-pattern>/alert</url-pattern>
     </servlet-mapping>
+        
+    
+    <servlet>
+        <servlet-name>data</servlet-name>
+        <servlet-class>com.gmail.utexas.rmsystem.AccelerometerServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>data</servlet-name>
+        <url-pattern>/data</url-pattern>
+    </servlet-mapping>
+    
+    
+    <servlet>
+        <servlet-name>start</servlet-name>
+        <servlet-class>com.gmail.utexas.rmsystem.AlgorithmsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>start</servlet-name>
+        <url-pattern>/start</url-pattern>
+    </servlet-mapping>
+    
     
     
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
+    
+    
   
 
 </web-app>

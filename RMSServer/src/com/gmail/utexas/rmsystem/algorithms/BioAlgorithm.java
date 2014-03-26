@@ -1,4 +1,4 @@
-package rmsystem2014;
+package com.gmail.utexas.rmsystem.algorithms;
 
 import java.util.ArrayList;
 

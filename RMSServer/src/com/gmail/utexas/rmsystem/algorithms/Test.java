@@ -1,4 +1,4 @@
-package rmsystem2014;
+package com.gmail.utexas.rmsystem.algorithms;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -15,11 +15,11 @@ public class Test {
 		Scanner scan;
 		
 		public PushQueue() throws FileNotFoundException{
-			filename = "data/jessica_walking_paperclip1.txt";
-			//filename = "data\\jessica_lying_paperclip1.txt";
+			//filename = "data/jessica_walking_paperclip1.txt";			
+			filename = "data\\jessica_walking_paperclip1.txt";
 			scan = new Scanner(new FileReader(filename));
 		}
-		@Override
+		
 		public void run() {
 			while(scan.hasNextInt()){
 				q.enq(scan.nextInt());
@@ -30,7 +30,6 @@ public class Test {
 	public static class PullQueue implements Runnable{
 		AccelerometerAlgorithm a = new AccelerometerAlgorithm();
 
-		@Override
 		public void run() {
 			while(true){
 				a.processData(q.deq());
@@ -38,12 +37,12 @@ public class Test {
 		}
 	}
 	
-	public static void main(String[] args) throws FileNotFoundException{
-		PushQueue push = new PushQueue();
-		PullQueue pull = new PullQueue();
-		
-		ExecutorService pool = Executors.newCachedThreadPool();
-		pool.submit(push);
-		pool.submit(pull);
-	}
+//	public static void main(String[] args) throws FileNotFoundException{
+//		PushQueue push = new PushQueue();
+//		PullQueue pull = new PullQueue();
+//		
+//		ExecutorService pool = Executors.newCachedThreadPool();
+//		pool.submit(push);
+//		pool.submit(pull);
+//	}
 }
