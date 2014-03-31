@@ -14,20 +14,29 @@ import com.google.gson.Gson;
 
 public class AlertServlet extends HttpServlet{
 	
-
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		GCMHandler.sendToApp(LogMessageHandler.createMessage(LogMessageHandler.M_APP, "sleepwalking"), "fake_device_id");		
+		String message = LogMessageHandler.createMessage(LogMessageHandler.M_APP, "sleepwalking");
+		GCMHandler.sendToApp("fake_device_id", LogMessageHandler.M_APP, message);		
 	}
 	
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    	String type = req.getParameter("type");
+    	String app= req.getParameter("app");
+
+    	String appID = LogMessageHandler.M_APP;
+    	if(app.equals("g1")){
+    		appID = LogMessageHandler.G_APP;
+    	} else if (app.equals("m1")){
+    		appID = LogMessageHandler.M_APP;
+    	} else if (app.equals("g2")){
+    		appID = LogMessageHandler.G_APP_SIM;
+    	}
+    		    	
+    	String deviceID = "RMShardware";
+    	
+    	String message = LogMessageHandler.createMessage(appID, type);
+		GCMHandler.sendToApp(deviceID, appID, message);		
+		resp.sendRedirect("/");
+	}	
 	
-	public String createFakeLogMessage(){
-		Date date = new Date();
-		SimpleDateFormat ft = new SimpleDateFormat ("EEE, MM/dd h:mm a");
-		String currentTime = ft.format(date);
-		
-		NotificationLogMessage message = new NotificationLogMessage("Sleepwalking", currentTime, "", "alarm");
-		Gson gson = new Gson();		
-		String msg = "\"logMessage\":"+gson.toJson(message);		
-		return msg;
-	}
 }

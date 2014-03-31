@@ -19,21 +19,19 @@ import com.google.gson.Gson;
 import com.googlecode.objectify.ObjectifyService;
 
 
-
 public class GCMHandler {
 	private final static String server_key = "AIzaSyAO423ysTxCFWlNtllk-Ms2aQP5UJaBYAs";
 	static Logger log = Logger.getLogger(GCMHandler.class.getName());
-
 	static {
 		ObjectifyService.register(Device.class);
 	}
 
 
-	public static String sendToApp(String msg, String deviceID) throws IOException{
+	public static String sendToApp(String deviceID, String appID, String msg) throws IOException{
 		String resp = "";
     	log.setLevel(Level.INFO);
-		
-		String message = createGSMPost(deviceID, msg);
+    	
+    	String message = createGCMMessage(deviceID, appID, msg);
 
 		URL url = new URL("https://android.googleapis.com/gcm/send");
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -68,26 +66,30 @@ public class GCMHandler {
 			}
 		}
 
-		if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-			log.info("Success!");    		
-		} else {
-			log.info(connection.getResponseMessage());
-		}
 		return resp;
 	}   
 
-	public static String createGSMPost(String deviceID, String message){
+	public static String createGCMMessage(String deviceID, String appID, String message){
 		StringBuffer sb = new StringBuffer();
 		Device device = ofy().load().type(Device.class).id(deviceID).get();
-		ArrayList<String> appIDs = device.getAppIDs(); 
-		sb.append("{\"registration_ids\":[\"");
-		for(int k = 0; k < appIDs.size(); k++){			
-			sb.append(appIDs.get(k));
-			if(k + 1 != appIDs.size()){
-				sb.append(",");
+		
+		if(appID == null){
+			ArrayList<String> appIDs = device.getAppIDs(); 
+			sb.append("{\"registration_ids\":[\"");
+			for(int k = 0; k < appIDs.size(); k++){			
+				sb.append(appIDs.get(k));
+				if(k + 1 != appIDs.size()){
+					sb.append(",");
+				}
 			}
+			
+		} else {
+			sb.append("{\"registration_ids\":[\"");
+			sb.append(appID);
 		}
 		sb.append("\"], \"data\":{");
+		
+		
 		if(!message.equals("")){
 			sb.append(message+",");		
 		}
@@ -100,7 +102,6 @@ public class GCMHandler {
 		
 		return sb.toString();		
 	}
-		
 }
 
 

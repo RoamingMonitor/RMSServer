@@ -56,13 +56,4 @@ public class RegistrationServlet extends HttpServlet{
 		
 	}
 
-
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		// TODO: For debugging purposes, delete later
-		String msg = "hi"; 
-		GCMHandler.sendToApp(msg, "APA91bG8wRqLDdSZ06oPxsKsxbI8RFufD1sw_Bi2WlNcgx4kt_nK0DrlLit3zTsQEHoeEIzNPDBehuG3J8JA-ncQWMZY5KvIQK9BVJUUcvOc4vOeCtBYg8SYwbShQVsg1DhSZbOd2YcjCVW51th6vI959El52vHbIw");
-	}
-	
-
-
 }

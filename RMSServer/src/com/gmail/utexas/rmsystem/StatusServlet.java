@@ -39,7 +39,7 @@ public class StatusServlet extends HttpServlet{
 		log.info("Current Time: "+currentTime );
 		for(Settings s: list){		
 			log.info("Comparing ["+currentTime+"] to ["+s.start+"]");
-			if(s.start !=null && s.start.equals(currentTime)){
+			if(s.start !=null && s.start.equals(currentTime)){				
 				// TODO: send to device to activate
 				log.info("Activate: "+s.id );
 			} else if(s.end != null && s.end.equals(currentTime)){
@@ -66,7 +66,7 @@ public class StatusServlet extends HttpServlet{
 		if(device != null){
 			device.setStatus(status);
 			ofy().save().entity(device).now();
-			GCMHandler.sendToApp("", target);
+			GCMHandler.sendToApp(target, null, "");
 		} else {
 			String ip = req.getRemoteAddr();
 			device = new Device(target, status, ip);

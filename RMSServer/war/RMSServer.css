@@ -196,6 +196,7 @@ th {
   a,
   a:visited {
     text-decoration: underline;
+    color: inherit;
   }
   a[href]:after {
     content: " (" attr(href) ")";
@@ -288,7 +289,7 @@ textarea {
   line-height: inherit;
 }
 a {
-  color: #4582ec;
+  color: inherit;
   text-decoration: none;
 }
 a:hover,

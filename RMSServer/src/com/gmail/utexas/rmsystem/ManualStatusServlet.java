@@ -21,11 +21,27 @@ public class ManualStatusServlet extends HttpServlet {
 		ObjectifyService.register(Device.class);
 	}
 	
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		String target = "RMShardware";
+		Device device = ofy().load().type(Device.class).id(target).get();
+		if(device != null){
+			device.setStatus(!device.getStatus());
+			ofy().save().entity(device).now();
+			// TODO: send message to device to activate or deactivate
+						
+			GCMHandler.sendToApp(target, null, "");	    	
+		} else {			
+	    	resp.setStatus(400);
+		}
+
+		resp.sendRedirect("/");
+	}
+	
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     	log.setLevel(Level.INFO);
 		BufferedReader reader = req.getReader();
 		boolean status = false;
-		String target = "fake_device_id";
+		String target = "";
 		try {			
 			String line = reader.readLine();
 			log.info(line);
@@ -40,8 +56,8 @@ public class ManualStatusServlet extends HttpServlet {
 		if(device != null){
 			device.setStatus(status);
 			ofy().save().entity(device).now();
-			// TODO: send message to device to activate or deactivate
-			GCMHandler.sendToApp("", target);	    	
+			// TODO: send message to device to activate or deactivate			
+			GCMHandler.sendToApp(target, null, ""); 	
 		} else {			
 	    	resp.setStatus(400);
 		}
