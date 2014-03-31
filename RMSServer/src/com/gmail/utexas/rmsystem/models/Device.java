@@ -12,6 +12,7 @@ public class Device {
 	private boolean status;
 	private String address;
 	private ArrayList<String> appIDs = new ArrayList<String>();
+	private boolean bioStatus;
 	
 	public Device(){
 		
@@ -20,7 +21,7 @@ public class Device {
 	public Device(String deviceID, boolean status, String address){
 		this.deviceID = deviceID;
 		this.status = status;		
-		this.address = address;
+		this.address = address;	
 	}
 	
 	public void setStatus(boolean status){
@@ -51,6 +52,14 @@ public class Device {
 		if(!appIDs.contains(appID)){
 			appIDs.add(appID);
 		}
+	}
+
+	public boolean getBioStatus() {
+		return bioStatus;
+	}
+
+	public void setBioStatus(boolean bioStatus) {
+		this.bioStatus = bioStatus;
 	}
 
 }

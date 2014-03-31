@@ -15,12 +15,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.gmail.utexas.rmsystem.algorithms.AccelerometerAlgorithm;
 import com.gmail.utexas.rmsystem.models.AccelerometerData;
+import com.gmail.utexas.rmsystem.models.Biometrics;
+import com.gmail.utexas.rmsystem.models.Device;
 import com.googlecode.objectify.ObjectifyService;
 
 public class AccelerometerServlet extends HttpServlet{
 	
 	static {
         ObjectifyService.register(AccelerometerData.class);
+        ObjectifyService.register(Device.class);
     }
 	Logger log = Logger.getLogger(AccelerometerServlet.class.getName());
 	
@@ -28,13 +31,18 @@ public class AccelerometerServlet extends HttpServlet{
 		log.info("Accelerometer data!");
 		String deviceID = req.getHeader("User-Agent");
 		AccelerometerData dataObject = ofy().load().type(AccelerometerData.class).id(deviceID).get();
+		log.info("Data from: "+deviceID);
 		if(dataObject == null){
 			dataObject = new AccelerometerData();
-			dataObject.setDeviceID(deviceID);
+			dataObject.setDeviceID(deviceID);			
 		}
+		
+		Device device = ofy().load().type(Device.class).id(deviceID).get();		
+//		device.setAddress(req.getRemoteAddr());
+//		ofy().save().entity(device).now();
+		
 		ArrayList<Integer> buffer = dataObject.getData();
-				
-		 BufferedReader reader = req.getReader();		 
+		BufferedReader reader = req.getReader();		 
 	        try {
 	            String line;
 	            while ((line = reader.readLine()) != null) {
@@ -56,7 +64,18 @@ public class AccelerometerServlet extends HttpServlet{
 	        } finally {
 	            reader.close();
 	        }
+	        
+	        log.info(device.getBioStatus()+"");
+	        if(device.getBioStatus()){
+	        	resp.setStatus(201);
+	        } else {
+	        	resp.setStatus(202);
+	        }
 	}
+	
+	
+	
+	
 	
 
 }
