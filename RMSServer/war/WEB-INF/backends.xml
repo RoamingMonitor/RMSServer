@@ -1,0 +1,5 @@
+<backends>
+ <backend name="algorithms"> <!-- default of resident with B2 class -->
+   <instances>5</instances>
+ </backend>
+</backends>
