@@ -29,7 +29,7 @@ public class AccelerometerServlet extends HttpServlet{
 	
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		log.info("Accelerometer data!");
-		String deviceID = req.getHeader("User-Agent");
+		String deviceID = "RMShardware"; //req.getHeader("User-Agent");
 		AccelerometerData dataObject = ofy().load().type(AccelerometerData.class).id(deviceID).get();
 		log.info("Data from: "+deviceID);
 		if(dataObject == null){
@@ -37,9 +37,13 @@ public class AccelerometerServlet extends HttpServlet{
 			dataObject.setDeviceID(deviceID);			
 		}
 		
-		Device device = ofy().load().type(Device.class).id(deviceID).get();		
+		Device device = ofy().load().type(Device.class).id(deviceID).get();
+		if(device == null){
+			device = new Device(deviceID, true, "");
+			ofy().save().entity(device).now();
+
+		}
 //		device.setAddress(req.getRemoteAddr());
-//		ofy().save().entity(device).now();
 		
 		ArrayList<Integer> buffer = dataObject.getData();
 		BufferedReader reader = req.getReader();		 

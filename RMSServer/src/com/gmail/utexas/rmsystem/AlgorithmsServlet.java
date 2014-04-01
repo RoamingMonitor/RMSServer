@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.gmail.utexas.rmsystem.algorithms.AccelerometerAlgorithm;
+//import com.gmail.utexas.rmsystem.algorithms.AccelerometerAlgorithm;
 import com.gmail.utexas.rmsystem.algorithms.AlgorithmQueue.PullQueue;
 import com.gmail.utexas.rmsystem.algorithms.AlgorithmQueue.PushQueue;
 import com.google.appengine.api.ThreadManager;
@@ -33,8 +33,10 @@ public class AlgorithmsServlet extends HttpServlet{
 		
 		Thread pushThread = ThreadManager.createBackgroundThread(push);
 		Thread pullThread = ThreadManager.createBackgroundThread(pull);
+		
 		pushThread.start();
 		pullThread.start();
+		log.info("Launching algorithm threads!");
 	}
 
 }
