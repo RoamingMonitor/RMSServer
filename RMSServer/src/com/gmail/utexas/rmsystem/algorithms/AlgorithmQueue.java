@@ -1,28 +1,73 @@
 package com.gmail.utexas.rmsystem.algorithms;
 
+import static com.googlecode.objectify.ObjectifyService.ofy;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Logger;
+
+import org.mortbay.log.Log;
+
+import com.gmail.utexas.rmsystem.AlgorithmsServlet;
+import com.gmail.utexas.rmsystem.models.AccelerometerData;
+import com.gmail.utexas.rmsystem.models.Device;
+import com.googlecode.objectify.ObjectifyService;
 
 public class AlgorithmQueue {
 	final static int CAPACITY = 16300;
 	static TwoLockQueue q = new TwoLockQueue(CAPACITY);
 	
+	static {
+        ObjectifyService.register(AccelerometerData.class);
+        ObjectifyService.register(Device.class);
+    }
+	
+	
 	public static class PushQueue implements Runnable{
 		String filename;
 		Scanner scan;
+		Logger log = Logger.getLogger(AlgorithmsServlet.class.getName());
 		
-		public PushQueue() throws FileNotFoundException{
-			//filename = "data/jessica_walking_paperclip1.txt";			
-			filename = "data\\jessica_walking_paperclip1.txt";
-			scan = new Scanner(new FileReader(filename));
-		}
+		public PushQueue(){	}
 		
 		public void run() {
-			while(scan.hasNextInt()){
-				q.enq(scan.nextInt());
+			//get original dataObject
+			log.info("Pushqueue running");
+			String deviceID = "RMShardware";
+			AccelerometerData dataObject = ofy().load().type(AccelerometerData.class).id(deviceID).get();
+			ArrayList<Integer> data = dataObject.getData();
+			
+			//clear & save objectify list so that new data can be entered
+			dataObject.setData(new ArrayList<Integer>());
+			ofy().save().entity(dataObject).now();
+			
+			while(true){
+				//loop until out of current data
+				if(data.size() > 0){
+					log.info("putting data into queue");
+					int d = data.get(0);
+					q.enq(d);
+					data.remove(0);
+				}
+				else{
+					log.info("data empty");
+					//current data empty...sleep
+					try{
+						Thread.sleep(100);
+					}catch(InterruptedException e){}
+					
+					//load potentially new data from objectify
+					dataObject = ofy().load().type(AccelerometerData.class).id(deviceID).get();
+					data = dataObject.getData();
+					
+					//clear & save objectify list so that new data can be entered
+					dataObject.setData(new ArrayList<Integer>());
+					ofy().save().entity(dataObject).now();
+				}
 			}
 		}
 	}
@@ -36,13 +81,4 @@ public class AlgorithmQueue {
 			}
 		}
 	}
-	
-//	public static void main(String[] args) throws FileNotFoundException{
-//		PushQueue push = new PushQueue();
-//		PullQueue pull = new PullQueue();
-//		
-//		ExecutorService pool = Executors.newCachedThreadPool();
-//		pool.submit(push);
-//		pool.submit(pull);
-//	}
 }

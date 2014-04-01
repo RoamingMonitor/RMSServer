@@ -1,10 +1,14 @@
 package com.gmail.utexas.rmsystem.algorithms;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.gmail.utexas.rmsystem.GCMHandler;
+import com.gmail.utexas.rmsystem.LogMessageHandler;
 import com.gmail.utexas.rmsystem.ManualStatusServlet;
 
 public class AccelerometerAlgorithm {
@@ -38,10 +42,11 @@ public class AccelerometerAlgorithm {
 	//takes in element from array and handles triggering of events due to data
 	public void processData(int data){
 		bufOut++;	//used for debugging where triggers occur (remove when done testing)
-		
+		log.info("Processing data");
 		//discard vals that are too low
 		if(data <= TOOLOW){
-			System.out.println("Value too low!");
+			//System.out.println("Value too low!");
+			log.info("Value too low!");
 			resetData();
 		}
 		
@@ -57,14 +62,16 @@ public class AccelerometerAlgorithm {
 			normCount = 0;
 			//check for too many low vals in a row
 			if(lowCount > MAX_LOW){
-				System.out.println("Too many low vals in a row!");
+				//System.out.println("Too many low vals in a row!");
+				log.info("Too many low vals in a row!");
 				resetData();
 			}
 		}
 		
 		//discard vals that are too high
 		else if(data >= TOOHIGH){
-			System.out.println("Too many high vals in a row!");
+			//System.out.println("Too many high vals in a row!");			
+			log.info("Too many high vals in a row!");
 			resetData();
 		}
 		
@@ -76,7 +83,8 @@ public class AccelerometerAlgorithm {
 			if(highCount <= MAX_HIGH){
 				if(lowCount != 0){
 					stepCount++;
-					System.out.println("Step count increased to: "+stepCount+" @ "+bufOut);
+					//System.out.println("Step count increased to: "+stepCount+" @ "+bufOut);
+					log.info("Step count increased to: "+stepCount+" @ "+bufOut);
 					lowCount = 0;
 					highCount = 0;
 				}
@@ -85,7 +93,8 @@ public class AccelerometerAlgorithm {
 				}
 			}
 			else{
-				System.out.println("Too many high values in a row...stopping prelim detection");
+				//System.out.println("Too many high values in a row...stopping prelim detection");
+				log.info("Too many high values in a row...stopping prelim detection");
 				resetData();
 			}
 		}
@@ -94,13 +103,15 @@ public class AccelerometerAlgorithm {
 		else if(data < THRESH_HI && data > THRESH_LOW){
 			normCount++;
 			if(normCount >= MAX_NORM){
-				System.out.println("Too many vals in norm range @ "+bufOut+"...stopping prelim");
+				//System.out.println("Too many vals in norm range @ "+bufOut+"...stopping prelim");
+				log.info("Too many vals in norm range @ "+bufOut+"...stopping prelim");
 				resetData();
 			}
 		}
 	}
 	public void resetData(){
-		System.out.println("Reseting accelerometer algorithm data");
+		//System.out.println("Reseting accelerometer algorithm data");
+		log.info("Reseting accelerometer algorithm data");
 		highCount=lowCount=stepCount=normCount=0;
 		prelimOn = false;
 		deactivateBio();
@@ -117,7 +128,19 @@ public class AccelerometerAlgorithm {
 	}
 	public void sendWalkingAlert(){
 		//handle walking alert to phone app
-		System.out.println("Send walking alert!");
+		//System.out.println("Send walking alert!");
+		log.info("Send walking alert!");
+
+    	String deviceID = "RMShardware";
+    	String appID = "APA91bFUQve9ZlGnjw8_g7eLWIL2qwz1jpo0qVtiCeaaLQ5OSjc1LEWC6zrg25gzg9c8Phc3cS4HSeC5ks5UfHbZuviIP52DNxV48h4mROalSYM-_Y2fmNvIzAak0kXrODEwcBq2_K7qu3YdP4y0mcMMbFg2MPvIHA";
+    	
+    	String message = LogMessageHandler.createMessage(appID, "roaming");
+    	try{
+    		GCMHandler.sendToApp(deviceID, appID, message);
+    	}catch(IOException e){}
+				
+
+		log.setLevel(Level.INFO);
 		log.info("Send walking alert!");
 	}
 }
