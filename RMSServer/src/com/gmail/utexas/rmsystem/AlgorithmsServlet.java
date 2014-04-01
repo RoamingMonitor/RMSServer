@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.gmail.utexas.rmsystem.algorithms.AccelerometerAlgorithm;
 import com.gmail.utexas.rmsystem.algorithms.AlgorithmQueue.PullQueue;
 import com.gmail.utexas.rmsystem.algorithms.AlgorithmQueue.PushQueue;
+import com.google.appengine.api.ThreadManager;
 
 public class AlgorithmsServlet extends HttpServlet{
 	
@@ -26,10 +27,14 @@ public class AlgorithmsServlet extends HttpServlet{
 		PushQueue push = new PushQueue();
 		PullQueue pull = new PullQueue();
 		
-		ExecutorService pool = Executors.newCachedThreadPool();
+		/*ExecutorService pool = Executors.newCachedThreadPool();
 		pool.submit(push);
-		pool.submit(pull);
+		pool.submit(pull);*/
+		
+		Thread pushThread = ThreadManager.createBackgroundThread(push);
+		Thread pullThread = ThreadManager.createBackgroundThread(pull);
+		pushThread.start();
+		pullThread.start();
 	}
-
 
 }
