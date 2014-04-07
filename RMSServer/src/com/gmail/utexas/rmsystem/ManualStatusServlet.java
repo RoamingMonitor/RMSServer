@@ -27,8 +27,6 @@ public class ManualStatusServlet extends HttpServlet {
 		if(device != null){
 			device.setStatus(!device.getStatus());
 			ofy().save().entity(device).now();
-			// TODO: send message to device to activate or deactivate
-						
 			GCMHandler.sendToApp(target, null, "");	    	
 		} else {			
 	    	resp.setStatus(400);
@@ -55,8 +53,7 @@ public class ManualStatusServlet extends HttpServlet {
 		Device device = ofy().load().type(Device.class).id(target).get();
 		if(device != null){
 			device.setStatus(status);
-			ofy().save().entity(device).now();
-			// TODO: send message to device to activate or deactivate			
+			ofy().save().entity(device).now();			
 			GCMHandler.sendToApp(target, null, ""); 	
 		} else {			
 	    	resp.setStatus(400);

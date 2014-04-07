@@ -28,24 +28,26 @@ public class AccelerometerServlet extends HttpServlet{
 	Logger log = Logger.getLogger(AccelerometerServlet.class.getName());
 	
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		log.setLevel(Level.INFO);
 		log.info("Accelerometer data!");
-		String deviceID = "RMShardware"; //req.getHeader("User-Agent");
-		AccelerometerData dataObject = ofy().load().type(AccelerometerData.class).id(deviceID).get();
+		//String deviceID = req.getHeader("User-Agent");
+		String deviceID = "RMShardware";
+		AccelerometerData dataObject = ofy().load().type(AccelerometerData.class).id(deviceID).get();		
 		log.info("Data from: "+deviceID);
 		if(dataObject == null){
 			dataObject = new AccelerometerData();
 			dataObject.setDeviceID(deviceID);			
 		}
 		
-		Device device = ofy().load().type(Device.class).id(deviceID).get();
-		if(device == null){
-			device = new Device(deviceID, true, "");
-			ofy().save().entity(device).now();
-
-		}
-//		device.setAddress(req.getRemoteAddr());
+		Device device = ofy().load().type(Device.class).id(deviceID).get();		
+				
+//		if(device == null){
+//			device = new Device(deviceID);
+//		}
+//		ofy().save().entity(device).now();
 		
-		ArrayList<Integer> buffer = dataObject.getData();
+		//ArrayList<Integer> buffer = dataObject.getData();
+		ArrayList<Integer> buffer = new ArrayList<Integer>();
 		BufferedReader reader = req.getReader();		 
 	        try {
 	            String line;
@@ -62,24 +64,28 @@ public class AccelerometerServlet extends HttpServlet{
 	            		buffer.add(point);
 	            	}
 	            	
-	            	dataObject.setData(buffer);
-	            	ofy().save().entity(dataObject).now();
+	            	dataObject.setData(buffer);	            	
 	            }
 	        } finally {
 	            reader.close();
 	        }
+	        ofy().save().entity(dataObject).now();
 	        
-	        log.info(device.getBioStatus()+"");
+	        log.info("Bio status: "+device.getBioStatus());
 	        if(device.getBioStatus()){
+	        	// Activate biometrics
 	        	resp.setStatus(201);
 	        } else {
+	        	// Deactivate biometrics
 	        	resp.setStatus(202);
 	        }
+	        
+	        log.info("Device status: "+device.getStatus());
+	        if(!device.getStatus()){
+	        	// Deactivate
+	        	resp.setStatus(203);
+	        }
 	}
-	
-	
-	
-	
 	
 
 }

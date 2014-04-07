@@ -24,12 +24,20 @@ public class Device {
 		this.address = address;	
 	}
 	
+	public Device(String deviceID){
+		this.deviceID = deviceID;
+	}
+	
 	public void setStatus(boolean status){
 		this.status = status;		
 	}
 	
 	public boolean getStatus(){
 		return status;
+	}
+	
+	public void setDeviceID(String id){
+		deviceID = id;
 	}
 	
 	public String getDeviceID(){

@@ -1,7 +1,11 @@
 package com.gmail.utexas.rmsystem.algorithms;
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -20,7 +24,7 @@ public class AccelerometerAlgorithm {
 	private final int MAX_NORM = 500;
 	private final int THRESH_HI = 2500;
 	private final int THRESH_LOW = 2200;
-	private final int REQSTEPS = 5;
+	private final int REQSTEPS = 3;
 	private final int TOOHIGH = 3000;
 	private final int TOOLOW = 1500;
 	private int bufIn, bufOut, dataCount, lowCount, highCount, stepCount, normCount;
@@ -42,7 +46,7 @@ public class AccelerometerAlgorithm {
 	//takes in element from array and handles triggering of events due to data
 	public void processData(int data){
 		bufOut++;	//used for debugging where triggers occur (remove when done testing)
-		log.info("Processing data");
+		//log.info("Processing data");
 		//discard vals that are too low
 		if(data <= TOOLOW){
 			//System.out.println("Value too low!");
@@ -128,19 +132,32 @@ public class AccelerometerAlgorithm {
 	}
 	public void sendWalkingAlert(){
 		//handle walking alert to phone app
-		//System.out.println("Send walking alert!");
-		log.info("Send walking alert!");
+		log.setLevel(Level.INFO);		
 
-    	String deviceID = "RMShardware";
-    	String appID = "APA91bFUQve9ZlGnjw8_g7eLWIL2qwz1jpo0qVtiCeaaLQ5OSjc1LEWC6zrg25gzg9c8Phc3cS4HSeC5ks5UfHbZuviIP52DNxV48h4mROalSYM-_Y2fmNvIzAak0kXrODEwcBq2_K7qu3YdP4y0mcMMbFg2MPvIHA";
-    	
-    	String message = LogMessageHandler.createMessage(appID, "roaming");
-    	try{
-    		GCMHandler.sendToApp(deviceID, appID, message);
-    	}catch(IOException e){}
-				
+		try {
+			URL url = null;
+			if(bio.isAsleep()){				
+				System.out.println("Sending sleepwalking alert!");
+				url = new URL("http://rmsystem2014.appspot.com/alert?type=sleepwalking&app=g3");
+			} else {
+				System.out.println("Sending roaming alert!");
+				url = new URL("http://rmsystem2014.appspot.com/alert?type=roaming&app=g3");
+			}
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setDoOutput(false);
+			connection.setRequestMethod("GET");
+			
+			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			StringBuffer response = new StringBuffer();
+			String inputLine;
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}			
+			//System.out.println(response.toString());
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-		log.setLevel(Level.INFO);
-		log.info("Send walking alert!");
 	}
 }

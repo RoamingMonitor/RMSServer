@@ -2,11 +2,13 @@ package com.gmail.utexas.rmsystem;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.http.*;
 
 import java.util.logging.Logger;
 
+import com.gmail.utexas.rmsystem.models.AccelerometerData;
 import com.gmail.utexas.rmsystem.models.Settings;
 import com.google.gson.Gson;
 import com.googlecode.objectify.ObjectifyService;
@@ -19,6 +21,7 @@ public class SettingsServlet extends HttpServlet{
 	Logger log = Logger.getLogger(SettingsServlet.class.getName());
 	static {
         ObjectifyService.register(Settings.class);
+        ObjectifyService.register(AccelerometerData.class);
     }
 
 
