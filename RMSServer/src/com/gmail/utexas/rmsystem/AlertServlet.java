@@ -16,7 +16,7 @@ public class AlertServlet extends HttpServlet{
 	
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		String message = LogMessageHandler.createMessage(LogMessageHandler.M_APP, "sleepwalking");
-		GCMHandler.sendToApp("fake_device_id", LogMessageHandler.M_APP, message);		
+		GCMHandler.sendToApp("fake_device_id", LogMessageHandler.M_APP, message);
 	}
 	
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -30,6 +30,8 @@ public class AlertServlet extends HttpServlet{
     		appID = LogMessageHandler.M_APP;
     	} else if (app.equals("g2")){
     		appID = LogMessageHandler.G_APP_SIM;
+    	} else if (app.equals("g3")){
+    		appID = LogMessageHandler.G_APP_DEBUG;
     	}
     		    	
     	String deviceID = "RMShardware";

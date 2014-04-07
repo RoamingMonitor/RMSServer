@@ -40,38 +40,21 @@ public class StatusServlet extends HttpServlet{
 		for(Settings s: list){		
 			log.info("Comparing ["+currentTime+"] to ["+s.start+"]");
 			if(s.start !=null && s.start.equals(currentTime)){				
-				// TODO: send to device to activate
 				log.info("Activate: "+s.id );
 			} else if(s.end != null && s.end.equals(currentTime)){
-				// TODO: send to device to deactivate
 				log.info("Deactivate: "+s.id);
 			}
 		}	
 	}
 
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		BufferedReader reader = req.getReader();
-		boolean status = false;
-		String target = "fake_device_id";    //TODO: fix to get real device id    
-		try {
-			String line;
-			while ((line = reader.readLine()) != null) {
-				status = Boolean.parseBoolean(line);
-			}
-		} finally {
-			reader.close();
-		}
-
-		Device device = ofy().load().type(Device.class).id(target).get();
-		if(device != null){
-			device.setStatus(status);
-			ofy().save().entity(device).now();
-			GCMHandler.sendToApp(target, null, "");
+		String deviceID = req.getHeader("User-Agent");
+		Device device = ofy().load().type(Device.class).id(deviceID).get();
+		
+		if(device.getStatus()){
+			resp.setStatus(204);
 		} else {
-			String ip = req.getRemoteAddr();
-			device = new Device(target, status, ip);
-			ofy().save().entity(device).now();
-		}
-
+			resp.setStatus(203);
+		}	
 	}
 }

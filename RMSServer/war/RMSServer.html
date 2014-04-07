@@ -50,21 +50,19 @@
 	<script src="js/bootstrap.js"></script>
 
 
-	<div class="container">
+	<div class="container" align="center">
 		<!-- header content -->
-		<center>
-			<h1>RMS Server Admin Console</h1>
-			<a href="/start" class="btn btn-lg btn-default">Start Algorithms</a>
+		
+			<h1>Roaming Monitor System Admin Console</h1>			
 			
 			<h2>Alerts</h2>
-			<a href="/" class="btn btn-lg btn-default">Sleepwalking</a>
-			<a href="/" class="btn btn-lg btn-default">Roaming</a>
-			<a href="/" class="btn btn-lg btn-default">Low Battery</a>
-			<a href="/" class="btn btn-lg btn-default">Poor Connection</a>
-		</center>
+			<a href="/alert?type=sleepwalking&app=g3" class="btn btn-lg btn-default">Sleepwalking</a>
+			<a href="/alert?type=roaming&app=g3" class="btn btn-lg btn-default">Roaming</a>
+			<a href="/alert?type=lowbattery&app=g3" class="btn btn-lg btn-default">Low Battery</a>
+			<a href="/alert?type=headset&app=g3" class="btn btn-lg btn-default">Poor Headset Connection</a>
 
 
-		<center><h2>Biometrics Inputs</h2></center>
+		<h2>Biometrics Inputs</h2>
 		<table align="center">
 			<tr>
 				<td style="font-weight: bold; padding: 0 15px 0 15px"><a
@@ -77,7 +75,12 @@
 					href="/biometrics?type=falsepositive" class="btn btn-lg btn-default">False Positive</a></td>
 			</tr>
 		</table>
+		
+		<h2>Device Status</h2>
+		<a href="/manual_status" class="btn btn-lg btn-default">Toggle Device Status</a>
+		<a href="/test" class="btn btn-lg btn-default">Toggle Biometrics Status</a>
+		
+		
 	</div>
-
 </body>
 </html>

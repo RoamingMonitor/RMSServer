@@ -62,10 +62,10 @@
 			<h1>RMS Server Admin Console</h1>
 			
 			<h2>Alerts</h2>
-			<a href="/alert?type=sleepwalking&app=g1" class="btn btn-lg btn-default">Sleepwalking</a>
-			<a href="/alert?type=roaming&app=g1" class="btn btn-lg btn-default">Roaming</a>
-			<a href="/alert?type=lowbattery&app=g1" class="btn btn-lg btn-default">Low Battery</a>
-			<a href="/alert?type=headset&app=g1" class="btn btn-lg btn-default">Poor Headset Connection</a>
+			<a href="/alert?type=sleepwalking&app=g3" class="btn btn-lg btn-default">Sleepwalking</a>
+			<a href="/alert?type=roaming&app=g3" class="btn btn-lg btn-default">Roaming</a>
+			<a href="/alert?type=lowbattery&app=g3" class="btn btn-lg btn-default">Low Battery</a>
+			<a href="/alert?type=headset&app=g3" class="btn btn-lg btn-default">Poor Headset Connection</a>
 		
 
 		<% 
