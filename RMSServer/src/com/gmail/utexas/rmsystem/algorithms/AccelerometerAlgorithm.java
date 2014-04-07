@@ -29,6 +29,7 @@ public class AccelerometerAlgorithm {
 	private final int TOOLOW = 1500;
 	private int bufIn, bufOut, dataCount, lowCount, highCount, stepCount, normCount;
 	private boolean prelimOn;
+	private boolean detection_sent;
 	private BioAlgorithm bio;
 	
 	Logger log = Logger.getLogger(AccelerometerAlgorithm.class.getName());
@@ -41,12 +42,16 @@ public class AccelerometerAlgorithm {
 		lowCount = 0;
 		bio = new BioAlgorithm();
 		prelimOn = false;
+		detection_sent = false;
 	}
 	
 	//takes in element from array and handles triggering of events due to data
 	public void processData(int data){
 		bufOut++;	//used for debugging where triggers occur (remove when done testing)
-		//log.info("Processing data");
+		if(detection_sent && timeDiff >= 5){
+			sendWalkingAlert();
+		}
+		
 		//discard vals that are too low
 		if(data <= TOOLOW){
 			//System.out.println("Value too low!");
@@ -66,7 +71,6 @@ public class AccelerometerAlgorithm {
 			normCount = 0;
 			//check for too many low vals in a row
 			if(lowCount > MAX_LOW){
-				//System.out.println("Too many low vals in a row!");
 				log.info("Too many low vals in a row!");
 				resetData();
 			}
@@ -74,7 +78,6 @@ public class AccelerometerAlgorithm {
 		
 		//discard vals that are too high
 		else if(data >= TOOHIGH){
-			//System.out.println("Too many high vals in a row!");			
 			log.info("Too many high vals in a row!");
 			resetData();
 		}
@@ -87,17 +90,15 @@ public class AccelerometerAlgorithm {
 			if(highCount <= MAX_HIGH){
 				if(lowCount != 0){
 					stepCount++;
-					//System.out.println("Step count increased to: "+stepCount+" @ "+bufOut);
 					log.info("Step count increased to: "+stepCount+" @ "+bufOut);
 					lowCount = 0;
 					highCount = 0;
 				}
-				if(stepCount >= REQSTEPS){
+				if(stepCount >= REQSTEPS && !detection_sent){
 					sendWalkingAlert();
 				}
 			}
 			else{
-				//System.out.println("Too many high values in a row...stopping prelim detection");
 				log.info("Too many high values in a row...stopping prelim detection");
 				resetData();
 			}
@@ -107,14 +108,12 @@ public class AccelerometerAlgorithm {
 		else if(data < THRESH_HI && data > THRESH_LOW){
 			normCount++;
 			if(normCount >= MAX_NORM){
-				//System.out.println("Too many vals in norm range @ "+bufOut+"...stopping prelim");
 				log.info("Too many vals in norm range @ "+bufOut+"...stopping prelim");
 				resetData();
 			}
 		}
 	}
 	public void resetData(){
-		//System.out.println("Reseting accelerometer algorithm data");
 		log.info("Reseting accelerometer algorithm data");
 		highCount=lowCount=stepCount=normCount=0;
 		prelimOn = false;
@@ -122,12 +121,10 @@ public class AccelerometerAlgorithm {
 	}
 	public void activateBio(){
 		//make new thread to start processing biometric data
-		//System.out.println("Turn biometrics on!");
 		bio.activate();
 	}
 	public void deactivateBio(){
 		//make new thread to handle turning biometrics off
-		//System.out.println("Turn biometrics off!");
 		bio.deactivate();
 	}
 	public void sendWalkingAlert(){
@@ -152,9 +149,7 @@ public class AccelerometerAlgorithm {
 			String inputLine;
 			while ((inputLine = in.readLine()) != null) {
 				response.append(inputLine);
-			}			
-			//System.out.println(response.toString());
-			
+			}						
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
