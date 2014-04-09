@@ -54,7 +54,7 @@ public class AlgorithmQueue {
 //					log.info("data empty");
 					//current data empty...sleep
 					try{
-						Thread.sleep(3000);
+						Thread.sleep(1000);
 					}catch(InterruptedException e){}
 					
 					data = DatastoreHandler.getData();
