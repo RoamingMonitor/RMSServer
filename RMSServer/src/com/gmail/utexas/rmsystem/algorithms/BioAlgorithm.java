@@ -28,5 +28,4 @@ public class BioAlgorithm {
 	public void deactivate(){
 		sleep = true;
 	}
-
 }

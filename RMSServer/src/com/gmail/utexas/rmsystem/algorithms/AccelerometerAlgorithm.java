@@ -5,20 +5,20 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.mortbay.log.Log;
+
 import com.gmail.utexas.rmsystem.GCMHandler;
 import com.gmail.utexas.rmsystem.LogMessageHandler;
 import com.gmail.utexas.rmsystem.ManualStatusServlet;
 
 public class AccelerometerAlgorithm {
-	private ArrayList<Integer> buf;
-	//private final int BUFSIZE = 14969;
-	private final int BUFSIZE = 16300;
 	private final int MAX_LOW = 150;
 	private final int MAX_HIGH = 150;
 	private final int MAX_NORM = 500;
@@ -27,34 +27,45 @@ public class AccelerometerAlgorithm {
 	private final int REQSTEPS = 3;
 	private final int TOOHIGH = 3000;
 	private final int TOOLOW = 1500;
-	private int bufIn, bufOut, dataCount, lowCount, highCount, stepCount, normCount;
+	private int lowCount, highCount, stepCount, normCount;
+	private long detectionTimestamp, allowedRoamingDuration;
 	private boolean prelimOn;
-	private boolean detection_sent;
+	private boolean detected, sentRoaming;
 	private BioAlgorithm bio;
 	
 	Logger log = Logger.getLogger(AccelerometerAlgorithm.class.getName());
 
 	public AccelerometerAlgorithm() {
-		buf = new ArrayList<Integer>();
-		bufIn = 0;
-		bufOut = 0;
-		dataCount = 0;
 		lowCount = 0;
 		bio = new BioAlgorithm();
 		prelimOn = false;
-		detection_sent = false;
+		detected = false;
+		allowedRoamingDuration = getAllowedRoamingDuration();
 	}
 	
 	//takes in element from array and handles triggering of events due to data
 	public void processData(int data){
-		bufOut++;	//used for debugging where triggers occur (remove when done testing)
-		if(detection_sent && timeDiff >= 5){
-			sendWalkingAlert();
+		//sleepwalking!!!
+		if(stepCount >= REQSTEPS && bio.isAsleep() && !detected){
+			detected = true;
+			sendAlert("sleepwalking");
+		}
+		//roaming!!!
+		if(stepCount >= REQSTEPS && !bio.isAsleep() && !sentRoaming){
+			if(!detected){
+				detected = true;
+				detectionTimestamp = System.currentTimeMillis();
+				log.info("Roaming detected...now wait to confirm");
+			}
+			else if((System.currentTimeMillis() - detectionTimestamp) >= allowedRoamingDuration){
+				log.info("Sending roaming alert");
+				sendAlert("roaming");
+				sentRoaming = true;
+			}
 		}
 		
 		//discard vals that are too low
 		if(data <= TOOLOW){
-			//System.out.println("Value too low!");
 			log.info("Value too low!");
 			resetData();
 		}
@@ -63,7 +74,6 @@ public class AccelerometerAlgorithm {
 		else if(data <= THRESH_LOW){
 			//check if first low step and need to turn on biometrics
 			if(lowCount == 1 && stepCount == 0){
-				//System.out.println("Preliminary detection started!");
 				prelimOn = true;
 				activateBio();
 			}
@@ -78,7 +88,7 @@ public class AccelerometerAlgorithm {
 		
 		//discard vals that are too high
 		else if(data >= TOOHIGH){
-			log.info("Too many high vals in a row!");
+			log.info("Data vals too high!");
 			resetData();
 		}
 		
@@ -90,12 +100,9 @@ public class AccelerometerAlgorithm {
 			if(highCount <= MAX_HIGH){
 				if(lowCount != 0){
 					stepCount++;
-					log.info("Step count increased to: "+stepCount+" @ "+bufOut);
+					log.info("Step count increased to: "+stepCount);
 					lowCount = 0;
 					highCount = 0;
-				}
-				if(stepCount >= REQSTEPS && !detection_sent){
-					sendWalkingAlert();
 				}
 			}
 			else{
@@ -108,7 +115,7 @@ public class AccelerometerAlgorithm {
 		else if(data < THRESH_HI && data > THRESH_LOW){
 			normCount++;
 			if(normCount >= MAX_NORM){
-				log.info("Too many vals in norm range @ "+bufOut+"...stopping prelim");
+				log.info("Too many vals in norm range...stopping prelim");
 				resetData();
 			}
 		}
@@ -117,6 +124,8 @@ public class AccelerometerAlgorithm {
 		log.info("Reseting accelerometer algorithm data");
 		highCount=lowCount=stepCount=normCount=0;
 		prelimOn = false;
+		detected = false;
+		sentRoaming = false;
 		deactivateBio();
 	}
 	public void activateBio(){
@@ -127,19 +136,35 @@ public class AccelerometerAlgorithm {
 		//make new thread to handle turning biometrics off
 		bio.deactivate();
 	}
-	public void sendWalkingAlert(){
-		//handle walking alert to phone app
+	public void sendAlert(String type){
+		//type must be either: "sleepwalking" or "roaming"
 		log.setLevel(Level.INFO);		
-
+		URL url = null;
 		try {
-			URL url = null;
-			if(bio.isAsleep()){				
-				System.out.println("Sending sleepwalking alert!");
-				url = new URL("http://rmsystem2014.appspot.com/alert?type=sleepwalking&app=g3");
-			} else {
-				System.out.println("Sending roaming alert!");
-				url = new URL("http://rmsystem2014.appspot.com/alert?type=roaming&app=g3");
-			}
+			System.out.println("Sending "+type+" alert!");
+			url = new URL("http://rmsystem2014.appspot.com/alert?type="+type+"&app=g3");
+			System.out.println(url.toString());
+		}catch (MalformedURLException e){
+			e.printStackTrace();
+		}
+		send(url);
+	}
+	public long getAllowedRoamingDuration(){
+		log.setLevel(Level.INFO);		
+		URL url = null;
+		try {
+			System.out.println("Getting allowed roaming duration setting!");
+			url = new URL("http://rmsystem2014.appspot.com/settings");
+		}catch (MalformedURLException e){
+			e.printStackTrace();
+		}
+		String setting = send(url);
+		long temp = Long.parseLong(setting)*6*1000;//CHANGE ME BACK!!! *60*1000; //convert to millisecs and return value
+		System.out.println("Allowed roaming time in milli: " + temp);
+		return temp;
+	}
+	public String send(URL url){
+		try{
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setDoOutput(false);
 			connection.setRequestMethod("GET");
@@ -149,10 +174,11 @@ public class AccelerometerAlgorithm {
 			String inputLine;
 			while ((inputLine = in.readLine()) != null) {
 				response.append(inputLine);
-			}						
-		} catch (IOException e) {
+			}	
+			return response.toString();
+		}catch(IOException e){
 			e.printStackTrace();
 		}
-
+		return "error";			
 	}
 }
