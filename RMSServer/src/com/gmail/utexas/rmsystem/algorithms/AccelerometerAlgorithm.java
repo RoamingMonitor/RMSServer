@@ -49,6 +49,7 @@ public class AccelerometerAlgorithm {
 		if(stepCount >= REQSTEPS && bio.isAsleep() && !detected){
 			detected = true;
 			sendAlert("sleepwalking");
+			//send dependent_status update to Melissa's new servlet!
 		}
 		//roaming!!!
 		if(stepCount >= REQSTEPS && !bio.isAsleep() && !sentRoaming){
@@ -56,6 +57,7 @@ public class AccelerometerAlgorithm {
 				detected = true;
 				detectionTimestamp = System.currentTimeMillis();
 				log.info("Roaming detected...now wait to confirm");
+				//send dependent_status update to Melissa's new servlet!
 			}
 			else if((System.currentTimeMillis() - detectionTimestamp) >= allowedRoamingDuration){
 				log.info("Sending roaming alert");
@@ -159,7 +161,7 @@ public class AccelerometerAlgorithm {
 			e.printStackTrace();
 		}
 		String setting = send(url);
-		long temp = Long.parseLong(setting)*6*1000;//CHANGE ME BACK!!! *60*1000; //convert to millisecs and return value
+		long temp = Long.parseLong(setting)*60*1000; //convert to millisecs and return value
 		System.out.println("Allowed roaming time in milli: " + temp);
 		return temp;
 	}
