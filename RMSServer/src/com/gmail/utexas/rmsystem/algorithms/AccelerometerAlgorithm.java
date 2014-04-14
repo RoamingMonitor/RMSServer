@@ -21,14 +21,14 @@ import com.gmail.utexas.rmsystem.models.Biometrics;
 import com.gmail.utexas.rmsystem.models.RMSUser;
 
 public class AccelerometerAlgorithm {
-	private final int MAX_LOW = 150;
-	private final int MAX_HIGH = 150;
+	private final int MAX_LOW = 50;
+	private final int MAX_HIGH = 50;
 	private final int MAX_NORM = 500;
 	private final int THRESH_HI = 2500;
 	private final int THRESH_LOW = 2200;
 	private final int REQSTEPS = 3;
-	private final int TOOHIGH = 3000;
-	private final int TOOLOW = 1500;
+	//private final int TOOHIGH = 3000;
+	//private final int TOOLOW = 1500;
 	private int lowCount, highCount, stepCount, normCount;
 	private long detectionTimestamp, snoozeTimestamp, allowedRoamingDuration, snoozeDuration;
 	private boolean prelimOn;
@@ -74,21 +74,21 @@ public class AccelerometerAlgorithm {
 			snoozed = false;
 			sentRoaming = false;
 		}
-		//discard vals that are too low
-		if(data <= TOOLOW){
-			log.info("Value too low!");
-			resetData();
-		}
-		
+//		//discard vals that are too low
+//		if(data <= TOOLOW){
+//			log.info("Value too low!");
+//			resetData();
+//		}
+//		
 		//check if low end of a step
-		else if(data <= THRESH_LOW){
+		if(data <= THRESH_LOW){
 			//check if first low step and need to turn on biometrics
+			lowCount++;
+			normCount = 0;
 			if(lowCount == 1 && stepCount == 0){
 				prelimOn = true;
 				setBioStatus("on");
 			}
-			lowCount++;
-			normCount = 0;
 			//check for too many low vals in a row
 			if(lowCount > MAX_LOW){
 				log.info("Too many low vals in a row!");
@@ -96,12 +96,12 @@ public class AccelerometerAlgorithm {
 			}
 		}
 		
-		//discard vals that are too high
-		else if(data >= TOOHIGH){
-			log.info("Data vals too high!");
-			resetData();
-		}
-		
+//		//discard vals that are too high
+//		else if(data >= TOOHIGH){
+//			log.info("Data vals too high!");
+//			resetData();
+//		}
+
 		//check for high end of step (only if low end has already been detected...aka prelim is ON)
 		else if(data >= THRESH_HI && prelimOn){
 			highCount++;
@@ -116,7 +116,7 @@ public class AccelerometerAlgorithm {
 				}
 			}
 			else{
-				log.info("Too many high values in a row...stopping prelim detection");
+				log.info("Too many high values in a row!");
 				resetData();
 			}
 		}
@@ -125,7 +125,7 @@ public class AccelerometerAlgorithm {
 		else if(data < THRESH_HI && data > THRESH_LOW){
 			normCount++;
 			if(normCount >= MAX_NORM){
-				log.info("Too many vals in norm range...stopping prelim");
+				log.info("Too many vals in norm range!");
 				resetData();
 			}
 		}
