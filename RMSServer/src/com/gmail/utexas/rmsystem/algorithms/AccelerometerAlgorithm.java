@@ -17,6 +17,7 @@ import org.mortbay.log.Log;
 import com.gmail.utexas.rmsystem.GCMHandler;
 import com.gmail.utexas.rmsystem.LogMessageHandler;
 import com.gmail.utexas.rmsystem.ManualStatusServlet;
+import com.gmail.utexas.rmsystem.models.Biometrics;
 
 public class AccelerometerAlgorithm {
 	private final int MAX_LOW = 150;
@@ -31,13 +32,11 @@ public class AccelerometerAlgorithm {
 	private long detectionTimestamp, allowedRoamingDuration;
 	private boolean prelimOn;
 	private boolean detected, sentRoaming;
-	private BioAlgorithm bio;
 	
 	Logger log = Logger.getLogger(AccelerometerAlgorithm.class.getName());
 
 	public AccelerometerAlgorithm() {
 		lowCount = 0;
-		bio = new BioAlgorithm();
 		prelimOn = false;
 		detected = false;
 		allowedRoamingDuration = getAllowedRoamingDuration();
@@ -46,13 +45,13 @@ public class AccelerometerAlgorithm {
 	//takes in element from array and handles triggering of events due to data
 	public void processData(int data){
 		//sleepwalking!!!
-		if(stepCount >= REQSTEPS && bio.isAsleep() && !detected){
+		if(stepCount >= REQSTEPS && !detected && getBioStatus().equals(Biometrics.ASLEEP)){
 			detected = true;
 			sendAlert("sleepwalking");
 			//send dependent_status update to Melissa's new servlet!
 		}
 		//roaming!!!
-		if(stepCount >= REQSTEPS && !bio.isAsleep() && !sentRoaming){
+		if(stepCount >= REQSTEPS && !sentRoaming && !getBioStatus().equals(Biometrics.ASLEEP) ){
 			if(!detected){
 				detected = true;
 				detectionTimestamp = System.currentTimeMillis();
@@ -131,15 +130,14 @@ public class AccelerometerAlgorithm {
 		deactivateBio();
 	}
 	public void activateBio(){
-		//make new thread to start processing biometric data
-		bio.activate();
+		setBioStatus("on");
 	}
 	public void deactivateBio(){
-		//make new thread to handle turning biometrics off
-		bio.deactivate();
+		setBioStatus("off");
 	}
 	public void sendAlert(String type){
 		//type must be either: "sleepwalking" or "roaming"
+		if(!(type.equals("sleepwalking") || type.equals("roaming"))) return;
 		log.setLevel(Level.INFO);		
 		URL url = null;
 		try {
@@ -164,6 +162,39 @@ public class AccelerometerAlgorithm {
 		long temp = Long.parseLong(setting)*60*1000; //convert to millisecs and return value
 		System.out.println("Allowed roaming time in milli: " + temp);
 		return temp;
+	}
+	public String getBioStatus(){
+		log.setLevel(Level.INFO);		
+		URL url = null;
+		try {
+			System.out.println("Getting biometrics status");
+			url = new URL("http://rmsystem2014.appspot.com/biometrics");
+		}catch (MalformedURLException e){
+			e.printStackTrace();
+		}
+		String status = send(url);
+		System.out.println("Current biometrics status: " + status);
+		return status;
+	}
+	public void setBioStatus(String s){
+		//s must either be "on" or "off"
+		String temp = "";
+		if(s.equals("on")){
+			temp = "true";
+		}
+		else if(s.equals("off")){
+			temp = "false";
+		}
+		else return;
+		log.setLevel(Level.INFO);		
+		URL url = null;
+		try {
+			System.out.println("Setting biometrics status " + s);
+			url = new URL("http://rmsystem2014.appspot.com/test?status="+temp);
+		}catch (MalformedURLException e){
+			e.printStackTrace();
+		}
+		send(url);
 	}
 	public String send(URL url){
 		try{
