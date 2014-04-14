@@ -15,8 +15,6 @@ import com.google.gson.Gson;
 public class AlertServlet extends HttpServlet{
 	
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		String message = LogMessageHandler.createMessage(LogMessageHandler.M_APP, "sleepwalking");
-		GCMHandler.sendToApp("fake_device_id", LogMessageHandler.M_APP, message);
 	}
 	
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

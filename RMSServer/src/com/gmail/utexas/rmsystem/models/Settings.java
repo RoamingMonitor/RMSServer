@@ -7,7 +7,7 @@ import com.googlecode.objectify.annotation.Id;
 @Entity
 public class Settings {
 	@Id public String id;
-	public int frequency, duration;
+	public int frequency, duration, snooze;
 	public String start, end;
 	public boolean schedule, roamingNotification, roamingAlarm, sleepwalkingNotification, sleepwalkingAlarm;
 	
