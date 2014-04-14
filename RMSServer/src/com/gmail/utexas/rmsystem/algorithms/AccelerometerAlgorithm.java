@@ -30,9 +30,9 @@ public class AccelerometerAlgorithm {
 	private final int TOOHIGH = 3000;
 	private final int TOOLOW = 1500;
 	private int lowCount, highCount, stepCount, normCount;
-	private long detectionTimestamp, allowedRoamingDuration;
+	private long detectionTimestamp, snoozeTimestamp, allowedRoamingDuration, snoozeDuration;
 	private boolean prelimOn;
-	private boolean detected, sentRoaming;
+	private boolean detected, sentRoaming, snoozed;
 	
 	Logger log = Logger.getLogger(AccelerometerAlgorithm.class.getName());
 
@@ -40,6 +40,8 @@ public class AccelerometerAlgorithm {
 		lowCount = 0;
 		prelimOn = false;
 		detected = false;
+		sentRoaming = false;
+		snoozed = false;
 		allowedRoamingDuration = getAllowedRoamingDuration();
 	}
 	
@@ -56,7 +58,7 @@ public class AccelerometerAlgorithm {
 			if(!detected){
 				detected = true;
 				detectionTimestamp = System.currentTimeMillis();
-				log.info("Roaming detected...now wait to confirm");
+				log.info("Roaming detected...now wait allowed duration");
 				setDependentStatus("Roaming");
 				allowedRoamingDuration = getAllowedRoamingDuration();
 			}
@@ -67,7 +69,11 @@ public class AccelerometerAlgorithm {
 				sentRoaming = true;
 			}
 		}
-		
+		//check on alert snoozing
+		if(snoozed && ((System.currentTimeMillis() - snoozeTimestamp) >= snoozeDuration)){
+			snoozed = false;
+			sentRoaming = false;
+		}
 		//discard vals that are too low
 		if(data <= TOOLOW){
 			log.info("Value too low!");
@@ -129,9 +135,15 @@ public class AccelerometerAlgorithm {
 		highCount=lowCount=stepCount=normCount=0;
 		prelimOn = false;
 		detected = false;
-		sentRoaming = false;
+		//sentRoaming = false;
 		setBioStatus("off");
 		setDependentStatus("Sleeping");
+	}	
+	public void snoozeAlert(long dur){
+		snoozed = true;
+		snoozeTimestamp = System.currentTimeMillis();
+		log.info("Alert has been snoozed");
+		snoozeDuration = dur*60*1000; //converted duration into millisecs
 	}
 	public void sendAlert(String type){
 		//type must be either: "sleepwalking" or "roaming"

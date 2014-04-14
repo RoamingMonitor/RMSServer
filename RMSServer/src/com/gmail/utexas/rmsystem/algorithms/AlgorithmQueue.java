@@ -21,6 +21,7 @@ import com.googlecode.objectify.ObjectifyService;
 public class AlgorithmQueue {
 	final static int CAPACITY = 16300;
 	static TwoLockQueue q = new TwoLockQueue(CAPACITY);
+	static int snooze;
 	
 	static {
         ObjectifyService.register(AccelerometerData.class);
@@ -43,15 +44,13 @@ public class AlgorithmQueue {
 			ArrayList<Integer> data = DatastoreHandler.getData();	
 			
 			while(true){
-				//loop until out of current data
 				if(data.size() > 0){
-//					log.info("putting data into queue");
+					//get available data and put to queue
 					int d = data.get(0);
 					q.enq(d);
 					data.remove(0);
 				}
 				else{
-//					log.info("data empty");
 					//current data empty...sleep
 					try{
 						Thread.sleep(1000);
@@ -68,6 +67,10 @@ public class AlgorithmQueue {
 
 		public void run() {
 			while(true){
+				snooze = DatastoreHandler.getSnooze();
+				if(snooze > 0){
+					a.snoozeAlert(snooze);
+				}
 				a.processData(q.deq());
 			}
 		}
