@@ -43,7 +43,8 @@ public class SnoozeServlet  extends HttpServlet{
     		resp.getWriter().println(settings.snooze);    		
     	} else { 
     		RMSUser user = ofy().load().type(RMSUser.class).id(LogMessageHandler.G_APP_DEBUG).get();
-    		resp.getWriter().println(user.isSnooze());
+    		Settings settings = ofy().load().type(Settings.class).id(LogMessageHandler.G_APP_DEBUG).get();
+    		resp.getWriter().println(user.isSnooze() +" "+ settings.snooze);
     		if(user.isSnooze()){
     			user.setSnooze(false);
     	    	ofy().save().entity(user).now();    	    			

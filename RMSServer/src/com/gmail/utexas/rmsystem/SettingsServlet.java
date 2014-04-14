@@ -2,17 +2,11 @@ package com.gmail.utexas.rmsystem;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
-
-import javax.servlet.http.*;
-
 import java.util.logging.Logger;
-
-import com.gmail.utexas.rmsystem.models.AccelerometerData;
+import javax.servlet.http.*;
 import com.gmail.utexas.rmsystem.models.Settings;
 import com.google.gson.Gson;
 import com.googlecode.objectify.ObjectifyService;
-import com.googlecode.objectify.Ref;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 

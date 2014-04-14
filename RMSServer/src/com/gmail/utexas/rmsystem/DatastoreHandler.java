@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 public class DatastoreHandler {
 	
 	static Logger log = Logger.getLogger("Datastore Handler");
+	static int duration;
 
 	
 	public static String makeRequest() throws IOException{
@@ -23,11 +24,13 @@ public class DatastoreHandler {
 		try{				
 			connection.setDoOutput(false);
 			connection.setRequestMethod("GET");
+//			int code = connection.getResponseCode();
+//			log.info("Response Code: " + code);
 
-//			log.info("Response Code: "+connection.getResponseCode());				
 			BufferedReader in = new BufferedReader(
 					new InputStreamReader(connection.getInputStream()));
-			String inputLine;
+			String inputLine = in.readLine();
+			duration = Integer.parseInt(inputLine);			
 
 			while ((inputLine = in.readLine()) != null) {
 				response.append(inputLine);
@@ -68,5 +71,9 @@ public class DatastoreHandler {
 			e.printStackTrace();
 		}
 		return data;
+	}
+	
+	public static int getSnooze(){
+		return duration;
 	}
 }
