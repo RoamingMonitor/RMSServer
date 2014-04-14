@@ -22,7 +22,7 @@ public class BiometricsServlet extends HttpServlet{
     }
 	
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-				
+		
 	}
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

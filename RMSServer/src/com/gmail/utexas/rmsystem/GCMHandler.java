@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.gmail.utexas.rmsystem.models.Device;
+import com.gmail.utexas.rmsystem.models.RMSUser;
 import com.google.gson.Gson;
 import com.googlecode.objectify.ObjectifyService;
 
@@ -24,6 +25,7 @@ public class GCMHandler {
 	static Logger log = Logger.getLogger(GCMHandler.class.getName());
 	static {
 		ObjectifyService.register(Device.class);
+        ObjectifyService.register(RMSUser.class);
 	}
 
 
@@ -72,6 +74,7 @@ public class GCMHandler {
 	public static String createGCMMessage(String deviceID, String appID, String message){
 		StringBuffer sb = new StringBuffer();
 		Device device = ofy().load().type(Device.class).id(deviceID).get();
+    	RMSUser user = ofy().load().type(RMSUser.class).id(LogMessageHandler.G_APP_DEBUG).get();
 		
 		if(appID == null){
 			ArrayList<String> appIDs = device.getAppIDs(); 
@@ -95,7 +98,8 @@ public class GCMHandler {
 		}
 		
 		boolean status = device.getStatus();
-		sb.append("\"activeStatus\":{\"activeFlag\":\""+status);
+		sb.append("\"activeStatus\":{\"activeFlag\":\""+status+"\"");
+		sb.append(", \"dependentStatus\":\""+user.getDependentStatus());
 		sb.append("\"}}}");		
 		
 		log.info(sb.toString());
@@ -103,5 +107,3 @@ public class GCMHandler {
 		return sb.toString();		
 	}
 }
-
-

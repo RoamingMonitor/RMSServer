@@ -21,21 +21,21 @@ public class SettingsServlet extends HttpServlet{
 	Logger log = Logger.getLogger(SettingsServlet.class.getName());
 	static {
         ObjectifyService.register(Settings.class);
-        ObjectifyService.register(AccelerometerData.class);
     }
 
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     	log.info(req.getQueryString());    	
     	String id = req.getParameter("id");
-    	log.info(id);
-    	
         resp.setContentType("text/plain");
+        
+        Settings settings = new Settings(); 
         if(id != null){
-        	Settings settings = ofy().load().type(Settings.class).id(id).get();        
-        	Gson gson = new Gson();        
-        	resp.getWriter().println(gson.toJson(settings));
-        }        
+        	settings = ofy().load().type(Settings.class).id(id).get();
+        } else {
+        	settings = ofy().load().type(Settings.class).id(LogMessageHandler.G_APP_DEBUG).get();
+        }
+    	resp.getWriter().println(settings.duration);
     }    
     
 

@@ -44,29 +44,32 @@ public class LogMessageHandler {
 
 		if(type.equals("sleepwalking")){
 			message.setMessageTitle("Sleepwalking");
+			message.setMessageBody("Sleepwalking detected!");
 			
 			if(settings.sleepwalkingNotification && settings.sleepwalkingAlarm){
-				message.setAlertType("both");
-				message.setMessageBody("Sleepwalking detected! Alarm and notification triggered.");
+				message.setAlertType("both");				
 			} else if(settings.sleepwalkingNotification){
 				message.setAlertType("notification");
-				message.setMessageBody("Sleepwalking detected! Notification triggered.");
 			} else if(settings.sleepwalkingAlarm){
 				message.setAlertType("alarm");
-				message.setMessageBody("Sleepwalking detected! Alarm triggered.");
-			}				
-		} else if(type.equals("roaming")){
-			message.setMessageTitle("Roaming");				
-			if(settings.roamingNotification && settings.roamingAlarm){
-				message.setAlertType("both");
-				message.setMessageBody("Roaming detected! Alarm and notification triggered.");
-			} else if(settings.roamingNotification){
-				message.setAlertType("notification");
-				message.setMessageBody("Roaming detected! Notification triggered.");
-			} else if(settings.roamingAlarm){
-				message.setAlertType("alarm");
-				message.setMessageBody("Roaming detected! Alarm triggered.");
+			} else {
+				message.setAlertType("none");
 			}
+			
+		} else if(type.equals("roaming")){
+			message.setMessageTitle("Roaming");
+			message.setMessageBody("Roaming detected!");
+			
+			if(settings.roamingNotification && settings.roamingAlarm){
+				message.setAlertType("both");			
+			} else if(settings.roamingNotification){
+				message.setAlertType("notification");			
+			} else if(settings.roamingAlarm){
+				message.setAlertType("alarm");		
+			} else {
+				message.setAlertType("none");
+			}
+			
 		}else if(type.equals("lowbattery")){
 			message.setAlertType("notification");
 			message.setMessageTitle("Low Battery");
@@ -80,6 +83,7 @@ public class LogMessageHandler {
 		TimeZone timeZone = TimeZone.getTimeZone("Central Standard Time");
 		Calendar calendar = new GregorianCalendar(timeZone);		
 		SimpleDateFormat ft = new SimpleDateFormat ("EEE, MM/dd h:mm a");
+		ft.setTimeZone(TimeZone.getTimeZone("CST"));
 		String currentTime = ft.format(calendar.getTime());		
 		message.setDateAndTime(currentTime);
 		
@@ -98,6 +102,7 @@ public class LogMessageHandler {
 	public String createFakeLogMessage(){
 		Date date = new Date();
 		SimpleDateFormat ft = new SimpleDateFormat ("EEE, MM/dd h:mm a");
+		ft.setTimeZone(TimeZone.getTimeZone("CST"));
 		String currentTime = ft.format(date);
 		
 		NotificationLogMessage message = new NotificationLogMessage("Sleepwalking", currentTime, "", "alarm");
