@@ -18,6 +18,7 @@ import com.gmail.utexas.rmsystem.GCMHandler;
 import com.gmail.utexas.rmsystem.LogMessageHandler;
 import com.gmail.utexas.rmsystem.ManualStatusServlet;
 import com.gmail.utexas.rmsystem.models.Biometrics;
+import com.gmail.utexas.rmsystem.models.RMSUser;
 
 public class AccelerometerAlgorithm {
 	private final int MAX_LOW = 150;
@@ -48,6 +49,7 @@ public class AccelerometerAlgorithm {
 		if(stepCount >= REQSTEPS && !detected && getBioStatus().equals(Biometrics.ASLEEP)){
 			detected = true;
 			sendAlert("sleepwalking");
+			setDependentStatus("SLEEPWALKING");
 			//send dependent_status update to Melissa's new servlet!
 		}
 		//roaming!!!
@@ -56,11 +58,13 @@ public class AccelerometerAlgorithm {
 				detected = true;
 				detectionTimestamp = System.currentTimeMillis();
 				log.info("Roaming detected...now wait to confirm");
+				setDependentStatus("ROAMING");
 				//send dependent_status update to Melissa's new servlet!
 			}
 			else if((System.currentTimeMillis() - detectionTimestamp) >= allowedRoamingDuration){
 				log.info("Sending roaming alert");
 				sendAlert("roaming");
+				setDependentStatus("ROAMING");
 				sentRoaming = true;
 			}
 		}
@@ -76,7 +80,7 @@ public class AccelerometerAlgorithm {
 			//check if first low step and need to turn on biometrics
 			if(lowCount == 1 && stepCount == 0){
 				prelimOn = true;
-				activateBio();
+				setBioStatus("on");
 			}
 			lowCount++;
 			normCount = 0;
@@ -127,13 +131,8 @@ public class AccelerometerAlgorithm {
 		prelimOn = false;
 		detected = false;
 		sentRoaming = false;
-		deactivateBio();
-	}
-	public void activateBio(){
-		setBioStatus("on");
-	}
-	public void deactivateBio(){
 		setBioStatus("off");
+		setDependentStatus("ASLEEP");
 	}
 	public void sendAlert(String type){
 		//type must be either: "sleepwalking" or "roaming"
@@ -191,6 +190,20 @@ public class AccelerometerAlgorithm {
 		try {
 			System.out.println("Setting biometrics status " + s);
 			url = new URL("http://rmsystem2014.appspot.com/test?status="+temp);
+		}catch (MalformedURLException e){
+			e.printStackTrace();
+		}
+		send(url);
+	}
+	public void setDependentStatus(String status){
+		status = status.toUpperCase();
+		//status must be: "ASLEEP", "ROAMING", or "SLEEPWALKING"
+		if(!(status.equals(RMSUser.ASLEEP) || status.equals(RMSUser.ROAMING) || status.equals(RMSUser.SLEEPWALKING))) return;
+		log.setLevel(Level.INFO);
+		URL url = null;
+		try {
+			System.out.println("Setting dependent's status to " + status);
+			url = new URL("http://rmsystem2014.appspot.com/dependent_status?status="+status);
 		}catch (MalformedURLException e){
 			e.printStackTrace();
 		}
