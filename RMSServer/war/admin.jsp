@@ -112,15 +112,17 @@
 		if(bioStatus){
 			pageContext.setAttribute("biotext", "Biometrics Active");
 			pageContext.setAttribute("biostyle", "btn-success");
+			pageContext.setAttribute("biourl", "false");
 		} else {
 			pageContext.setAttribute("biotext", "Biometrics Inactive");
 			pageContext.setAttribute("biostyle", "btn-failure");
+			pageContext.setAttribute("biourl", "true");
 		}
 		%>
 		
 		<h2>Device Status</h2>
 		<a href="/manual_status" class="btn btn-lg btn-default ${fn:escapeXml(devicestyle)}">${fn:escapeXml(devicetext)}</a>
-		<a href="/test" class="btn btn-lg btn-default ${fn:escapeXml(biostyle)}">${fn:escapeXml(biotext)}</a>
+		<a href="/test?status=${fn:escapeXml(biourl)}" class="btn btn-lg btn-default ${fn:escapeXml(biostyle)}">${fn:escapeXml(biotext)}</a>
 		
 		
 	</div>

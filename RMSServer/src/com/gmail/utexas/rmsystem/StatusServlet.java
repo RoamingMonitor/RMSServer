@@ -30,21 +30,32 @@ public class StatusServlet extends HttpServlet{
 	}
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		Query<Settings> q = ofy().load().type(Settings.class);
-		List<Settings> list = q.list();
+//		Query<Settings> q = ofy().load().type(Settings.class);
+//		List<Settings> list = q.list();
+		String deviceID = "RMShardware";
+		String appID = LogMessageHandler.G_APP_DEBUG;
+		Settings s = ofy().load().type(Settings.class).id(appID).get();
 		Date date = new Date();
 		SimpleDateFormat ft = new SimpleDateFormat ("hh:mma");
 		String currentTime = ft.format(date); 
 
 		log.info("Current Time: "+currentTime );
-		for(Settings s: list){		
+//		for(Settings s: list){		
 			log.info("Comparing ["+currentTime+"] to ["+s.start+"]");
 			if(s.start !=null && s.start.equals(currentTime)){				
 				log.info("Activate: "+s.id );
+				Device device = ofy().load().type(Device.class).id(deviceID).get();
+				device.setStatus(true);
+				ofy().save().entity(device).now();
 			} else if(s.end != null && s.end.equals(currentTime)){
 				log.info("Deactivate: "+s.id);
+				Device device = ofy().load().type(Device.class).id(deviceID).get();
+				device.setStatus(false);
+				ofy().save().entity(device).now();
 			}
-		}	
+//		}
+		
+		GCMHandler.sendToApp(deviceID, appID, "");		
 	}
 
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {

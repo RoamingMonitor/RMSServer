@@ -117,6 +117,15 @@
     </servlet-mapping>
     
     
+    <servlet>
+        <servlet-name>dependent_status</servlet-name>
+        <servlet-class>com.gmail.utexas.rmsystem.DependentServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>dependent_status</servlet-name>
+        <url-pattern>/dependent_status</url-pattern>
+    </servlet-mapping>
+    
     
     <welcome-file-list>
         <welcome-file>admin.jsp</welcome-file>

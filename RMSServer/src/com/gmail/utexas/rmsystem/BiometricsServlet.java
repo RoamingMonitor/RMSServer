@@ -30,10 +30,14 @@ public class BiometricsServlet extends HttpServlet{
 		Biometrics biometrics = ofy().load().type(Biometrics.class).id("RMShardware").get();
 		if(biometrics == null){
 			biometrics = new Biometrics("RMShardware");
-		}		
-		biometrics.setStatus(type);
-		ofy().save().entity(biometrics).now();
-		resp.sendRedirect("/");
+		}
+		if(type != null){
+			biometrics.setStatus(type);
+			ofy().save().entity(biometrics).now();
+			resp.sendRedirect("/");
+		} else {
+			resp.getWriter().println(biometrics.getStatus());
+		}
 	}
 
 }
