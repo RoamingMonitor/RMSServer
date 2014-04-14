@@ -27,8 +27,10 @@ public class TestServlet  extends HttpServlet {
 	}
 	
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		Device device = ofy().load().type(Device.class).id("RMShardware").get();
-		device.setBioStatus(!device.getBioStatus());
+		String str = req.getParameter("status");
+		boolean status = Boolean.parseBoolean(str); 
+		Device device = ofy().load().type(Device.class).id("RMShardware").get();		
+		device.setBioStatus(status);
 		ofy().save().entity(device).now();
 		resp.sendRedirect("/");
 	}
