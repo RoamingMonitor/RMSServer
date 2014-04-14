@@ -49,8 +49,7 @@ public class AccelerometerAlgorithm {
 		if(stepCount >= REQSTEPS && !detected && getBioStatus().equals(Biometrics.ASLEEP)){
 			detected = true;
 			sendAlert("sleepwalking");
-			setDependentStatus("SLEEPWALKING");
-			//send dependent_status update to Melissa's new servlet!
+			setDependentStatus("Sleepwalking");
 		}
 		//roaming!!!
 		if(stepCount >= REQSTEPS && !sentRoaming && !getBioStatus().equals(Biometrics.ASLEEP) ){
@@ -58,13 +57,13 @@ public class AccelerometerAlgorithm {
 				detected = true;
 				detectionTimestamp = System.currentTimeMillis();
 				log.info("Roaming detected...now wait to confirm");
-				setDependentStatus("ROAMING");
-				//send dependent_status update to Melissa's new servlet!
+				setDependentStatus("Roaming");
+				allowedRoamingDuration = getAllowedRoamingDuration();
 			}
 			else if((System.currentTimeMillis() - detectionTimestamp) >= allowedRoamingDuration){
 				log.info("Sending roaming alert");
 				sendAlert("roaming");
-				setDependentStatus("ROAMING");
+				setDependentStatus("Roaming");
 				sentRoaming = true;
 			}
 		}
@@ -132,7 +131,7 @@ public class AccelerometerAlgorithm {
 		detected = false;
 		sentRoaming = false;
 		setBioStatus("off");
-		setDependentStatus("ASLEEP");
+		setDependentStatus("Sleeping");
 	}
 	public void sendAlert(String type){
 		//type must be either: "sleepwalking" or "roaming"
@@ -196,8 +195,7 @@ public class AccelerometerAlgorithm {
 		send(url);
 	}
 	public void setDependentStatus(String status){
-		status = status.toUpperCase();
-		//status must be: "ASLEEP", "ROAMING", or "SLEEPWALKING"
+		//status must be: "Sleeping", "Roaming", or "Sleepwalking"
 		if(!(status.equals(RMSUser.ASLEEP) || status.equals(RMSUser.ROAMING) || status.equals(RMSUser.SLEEPWALKING))) return;
 		log.setLevel(Level.INFO);
 		URL url = null;
