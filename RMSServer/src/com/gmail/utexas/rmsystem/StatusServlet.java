@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.gmail.utexas.rmsystem.models.Device;
+import com.gmail.utexas.rmsystem.models.RMSUser;
 import com.gmail.utexas.rmsystem.models.Settings;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.cmd.LoadType;
@@ -57,7 +58,7 @@ public class StatusServlet extends HttpServlet{
 		
 		if(device.getStatus()){
 			GCMHandler.sendToApp(deviceID, appID, "");
-		}
+		}		
 	}
 
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
