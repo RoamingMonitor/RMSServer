@@ -9,7 +9,7 @@ public class RMSUser {
 	private String deviceID;
 	private boolean snoozeStatus;
 	private String dependentStatus;
-	public static final String ASLEEP = "Sleeping";
+	public static final String SLEEPING = "Sleeping";
 	public static final String ROAMING = "Roaming";
 	public static final String SLEEPWALKING = "Sleepwalking";
 	

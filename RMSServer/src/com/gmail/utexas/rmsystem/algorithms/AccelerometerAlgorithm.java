@@ -51,7 +51,7 @@ public class AccelerometerAlgorithm {
 		if(stepCount >= REQSTEPS && !detected && getBioStatus().equals(Biometrics.ASLEEP)){
 			detected = true;
 			sendAlert("sleepwalking");
-			setDependentStatus("Sleepwalking");
+			setDependentStatus(RMSUser.SLEEPWALKING);
 		}
 		//roaming!!!
 		if(stepCount >= REQSTEPS && !sentRoaming && !getBioStatus().equals(Biometrics.ASLEEP) ){
@@ -59,13 +59,13 @@ public class AccelerometerAlgorithm {
 				detected = true;
 				detectionTimestamp = System.currentTimeMillis();
 				log.info("Roaming detected...now wait allowed duration");
-				setDependentStatus("Roaming");
+				setDependentStatus(RMSUser.ROAMING);
 				allowedRoamingDuration = getAllowedRoamingDuration();
 			}
 			else if((System.currentTimeMillis() - detectionTimestamp) >= allowedRoamingDuration){
 				log.info("Sending roaming alert");
 				sendAlert("roaming");
-				setDependentStatus("Roaming");
+				setDependentStatus(RMSUser.ROAMING);
 				sentRoaming = true;
 			}
 		}
@@ -130,6 +130,7 @@ public class AccelerometerAlgorithm {
 			}
 		}
 	}
+	
 	public void resetData(){
 		log.info("Reseting accelerometer algorithm data");
 		highCount=lowCount=stepCount=normCount=0;
@@ -137,14 +138,16 @@ public class AccelerometerAlgorithm {
 		detected = false;
 		//sentRoaming = false;
 		setBioStatus("off");
-		setDependentStatus("Sleeping");
-	}	
+		setDependentStatus(RMSUser.SLEEPING);
+	}
+	
 	public void snoozeAlert(long dur){
 		snoozed = true;
 		snoozeTimestamp = System.currentTimeMillis();
 		log.info("Alert has been snoozed");
 		snoozeDuration = dur*60*1000; //converted duration into millisecs
 	}
+	
 	public void sendAlert(String type){
 		//type must be either: "sleepwalking" or "roaming"
 		if(!(type.equals("sleepwalking") || type.equals("roaming"))) return;
@@ -159,6 +162,7 @@ public class AccelerometerAlgorithm {
 		}
 		send(url);
 	}
+	
 	public long getAllowedRoamingDuration(){
 		log.setLevel(Level.INFO);		
 		URL url = null;
@@ -173,6 +177,7 @@ public class AccelerometerAlgorithm {
 		System.out.println("Allowed roaming time in milli: " + temp);
 		return temp;
 	}
+	
 	public String getBioStatus(){
 		log.setLevel(Level.INFO);		
 		URL url = null;
@@ -186,6 +191,7 @@ public class AccelerometerAlgorithm {
 		System.out.println("Current biometrics status: " + status);
 		return status;
 	}
+	
 	public void setBioStatus(String s){
 		//s must either be "on" or "off"
 		String temp = "";
@@ -206,9 +212,10 @@ public class AccelerometerAlgorithm {
 		}
 		send(url);
 	}
+	
 	public void setDependentStatus(String status){
 		//status must be: "Sleeping", "Roaming", or "Sleepwalking"
-		if(!(status.equals(RMSUser.ASLEEP) || status.equals(RMSUser.ROAMING) || status.equals(RMSUser.SLEEPWALKING))) return;
+		if(!(status.equals(RMSUser.SLEEPING) || status.equals(RMSUser.ROAMING) || status.equals(RMSUser.SLEEPWALKING))) return;
 		log.setLevel(Level.INFO);
 		URL url = null;
 		try {
@@ -219,6 +226,7 @@ public class AccelerometerAlgorithm {
 		}
 		send(url);
 	}
+	
 	public String send(URL url){
 		try{
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();

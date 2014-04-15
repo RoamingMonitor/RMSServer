@@ -74,7 +74,7 @@ public class GCMHandler {
 	public static String createGCMMessage(String deviceID, String appID, String message){
 		StringBuffer sb = new StringBuffer();
 		Device device = ofy().load().type(Device.class).id(deviceID).get();
-    	RMSUser user = ofy().load().type(RMSUser.class).id(LogMessageHandler.G_APP_DEBUG).get();
+		RMSUser user = ofy().load().type(RMSUser.class).id(LogMessageHandler.G_APP_DEBUG).get();
 		
 		if(appID == null){
 			ArrayList<String> appIDs = device.getAppIDs(); 

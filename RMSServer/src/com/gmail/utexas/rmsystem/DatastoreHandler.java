@@ -24,8 +24,6 @@ public class DatastoreHandler {
 		try{				
 			connection.setDoOutput(false);
 			connection.setRequestMethod("GET");
-//			int code = connection.getResponseCode();
-//			log.info("Response Code: " + code);
 
 			BufferedReader in = new BufferedReader(
 					new InputStreamReader(connection.getInputStream()));
