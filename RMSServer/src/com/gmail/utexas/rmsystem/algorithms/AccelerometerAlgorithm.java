@@ -1,7 +1,5 @@
 package com.gmail.utexas.rmsystem.algorithms;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -23,12 +21,10 @@ import com.gmail.utexas.rmsystem.models.RMSUser;
 public class AccelerometerAlgorithm {
 	private final int MAX_LOW = 50;
 	private final int MAX_HIGH = 50;
-	private final int MAX_NORM = 500;
+//	private final int MAX_NORM = 2000;
 	private final int THRESH_HI = 2500;
 	private final int THRESH_LOW = 2200;
 	private final int REQSTEPS = 3;
-	//private final int TOOHIGH = 3000;
-	//private final int TOOLOW = 1500;
 	private int lowCount, highCount, stepCount, normCount;
 	private long detectionTimestamp, snoozeTimestamp, allowedRoamingDuration, snoozeDuration;
 	private boolean prelimOn;
@@ -50,8 +46,8 @@ public class AccelerometerAlgorithm {
 		//sleepwalking!!!
 		if(stepCount >= REQSTEPS && !detected && getBioStatus().equals(Biometrics.ASLEEP)){
 			detected = true;
-			sendAlert("sleepwalking");
 			setDependentStatus(RMSUser.SLEEPWALKING);
+			sendAlert("sleepwalking");
 		}
 		//roaming!!!
 		if(stepCount >= REQSTEPS && !sentRoaming && !getBioStatus().equals(Biometrics.ASLEEP) ){
@@ -64,8 +60,8 @@ public class AccelerometerAlgorithm {
 			}
 			else if((System.currentTimeMillis() - detectionTimestamp) >= allowedRoamingDuration){
 				log.info("Sending roaming alert");
-				sendAlert("roaming");
 				setDependentStatus(RMSUser.ROAMING);
+				sendAlert("roaming");
 				sentRoaming = true;
 			}
 		}
@@ -74,12 +70,6 @@ public class AccelerometerAlgorithm {
 			snoozed = false;
 			sentRoaming = false;
 		}
-//		//discard vals that are too low
-//		if(data <= TOOLOW){
-//			log.info("Value too low!");
-//			resetData();
-//		}
-//		
 		//check if low end of a step
 		if(data <= THRESH_LOW){
 			//check if first low step and need to turn on biometrics
@@ -95,13 +85,6 @@ public class AccelerometerAlgorithm {
 				resetData();
 			}
 		}
-		
-//		//discard vals that are too high
-//		else if(data >= TOOHIGH){
-//			log.info("Data vals too high!");
-//			resetData();
-//		}
-
 		//check for high end of step (only if low end has already been detected...aka prelim is ON)
 		else if(data >= THRESH_HI && prelimOn){
 			highCount++;
@@ -120,14 +103,13 @@ public class AccelerometerAlgorithm {
 				resetData();
 			}
 		}
-		
 		//data is in normal range
 		else if(data < THRESH_HI && data > THRESH_LOW){
 			normCount++;
-			if(normCount >= MAX_NORM){
-				log.info("Too many vals in norm range!");
-				resetData();
-			}
+//			if(normCount >= MAX_NORM){
+//				log.info("Too many vals in norm range!");
+//				resetData();
+//			}
 		}
 	}
 	
@@ -142,10 +124,12 @@ public class AccelerometerAlgorithm {
 	}
 	
 	public void snoozeAlert(long dur){
-		snoozed = true;
-		snoozeTimestamp = System.currentTimeMillis();
-		log.info("Alert has been snoozed");
-		snoozeDuration = dur*60*1000; //converted duration into millisecs
+		if(!snoozed){
+			snoozed = true;
+			snoozeTimestamp = System.currentTimeMillis();
+			log.info("Alert has been snoozed");
+			snoozeDuration = dur*60*1000; //converted duration into millisecs
+		}
 	}
 	
 	public void sendAlert(String type){
@@ -182,13 +166,13 @@ public class AccelerometerAlgorithm {
 		log.setLevel(Level.INFO);		
 		URL url = null;
 		try {
-			System.out.println("Getting biometrics status");
+//			System.out.println("Getting biometrics status");
 			url = new URL("http://rmsystem2014.appspot.com/biometrics");
 		}catch (MalformedURLException e){
 			e.printStackTrace();
 		}
 		String status = send(url);
-		System.out.println("Current biometrics status: " + status);
+//		System.out.println("Current biometrics status: " + status);
 		return status;
 	}
 	
