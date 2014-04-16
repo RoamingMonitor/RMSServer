@@ -35,6 +35,8 @@ public class DatastoreServlet extends HttpServlet{
 		if(user.isSnooze()){			
     		Settings settings = ofy().load().type(Settings.class).id(LogMessageHandler.G_APP_DEBUG).get();
     		writer.println(settings.snooze);
+			user.setSnooze(false);
+	    	ofy().save().entity(user).now();
 		} else {
 			writer.println(0);
 		}

@@ -4,6 +4,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServlet;
@@ -35,20 +36,5 @@ public class SnoozeServlet  extends HttpServlet{
     	user.setSnooze(status);  	
     	ofy().save().entity(user).now();    	
     }
-
-    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    	String type = req.getParameter("type");
-    	if(type != null && type.equals("duration")){
-    		Settings settings = ofy().load().type(Settings.class).id(LogMessageHandler.G_APP_DEBUG).get();    
-    		resp.getWriter().println(settings.snooze);    		
-    	} else { 
-    		RMSUser user = ofy().load().type(RMSUser.class).id(LogMessageHandler.G_APP_DEBUG).get();
-    		Settings settings = ofy().load().type(Settings.class).id(LogMessageHandler.G_APP_DEBUG).get();
-    		resp.getWriter().println(user.isSnooze() +" "+ settings.snooze);
-    		if(user.isSnooze()){
-    			user.setSnooze(false);
-    	    	ofy().save().entity(user).now();    	    			
-    		}
-    	}
-    }
+    
 }
