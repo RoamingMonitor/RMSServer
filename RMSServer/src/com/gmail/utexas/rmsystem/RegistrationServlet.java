@@ -39,8 +39,11 @@ public class RegistrationServlet extends HttpServlet{
 		}
 		String content = sb.toString();
 		log.info(content);
-
+				
 		RMSUser user = gson.fromJson(content, RMSUser.class);
+		RMSUser oldUser = ofy().load().type(RMSUser.class).id(user.getAppID()).get();	
+		user.setDependentStatus(oldUser.getDependentStatus());
+		
 		ofy().save().entity(user).now();
 		resp.setContentType("text/plain");
 		

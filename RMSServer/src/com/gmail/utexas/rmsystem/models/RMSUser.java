@@ -9,9 +9,9 @@ public class RMSUser {
 	private String deviceID;
 	private boolean snoozeStatus;
 	private String dependentStatus;
-	public static final String SLEEPING = "Sleeping";
-	public static final String ROAMING = "Roaming";
-	public static final String SLEEPWALKING = "Sleepwalking";
+	public static final String SLEEPING = "sleeping";
+	public static final String ROAMING = "roaming";
+	public static final String SLEEPWALKING = "sleepwalking";
 	
 	public String getAppID(){
 		return appID;

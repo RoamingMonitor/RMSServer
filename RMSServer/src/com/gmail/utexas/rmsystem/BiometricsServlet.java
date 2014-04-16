@@ -28,9 +28,6 @@ public class BiometricsServlet extends HttpServlet{
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		String type = req.getParameter("type");
 		Biometrics biometrics = ofy().load().type(Biometrics.class).id("RMShardware").get();
-		if(biometrics == null){
-			biometrics = new Biometrics("RMShardware");
-		}
 		if(type != null){
 			biometrics.setStatus(type);
 			ofy().save().entity(biometrics).now();
