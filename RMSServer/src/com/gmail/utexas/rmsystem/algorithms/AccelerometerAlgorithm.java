@@ -49,7 +49,7 @@ public class AccelerometerAlgorithm {
 			sendAlert("sleepwalking");
 		}
 		//roaming!!!
-		if(stepCount >= REQSTEPS && !sentRoaming && !getBioStatus().equals(Biometrics.ASLEEP) ){
+		if(stepCount >= REQSTEPS && !sentRoaming && getBioStatus().equals(Biometrics.AWAKE) ){
 			if(!detected){
 				detected = true;
 				detectionTimestamp = System.currentTimeMillis();
@@ -58,7 +58,7 @@ public class AccelerometerAlgorithm {
 				allowedRoamingDuration = getAllowedRoamingDuration();
 			}
 			else if((System.currentTimeMillis() - detectionTimestamp) >= allowedRoamingDuration){
-				log.info("Sending roaming alert");
+				//log.info("Sending roaming alert");
 				setDependentStatus(RMSUser.ROAMING);
 				sendAlert("roaming");
 				sentRoaming = true;
@@ -69,6 +69,7 @@ public class AccelerometerAlgorithm {
 			snoozed = false;
 			sentRoaming = false;
 			if(stepCount >= REQSTEPS && getBioStatus().equals(Biometrics.ASLEEP)){
+				//log.info("Sending roaming alert");
 				sendAlert("sleepwalking");
 			}
 		}
@@ -170,7 +171,7 @@ public class AccelerometerAlgorithm {
 			e.printStackTrace();
 		}
 		String status = send(url);
-//		System.out.println("Current biometrics status: " + status);
+		//System.out.println("Current biometrics status: " + status);
 		return status;
 	}
 	
