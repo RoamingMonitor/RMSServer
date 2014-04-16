@@ -23,8 +23,10 @@ public class AlgorithmQueue {
 	static TwoLockQueue q = new TwoLockQueue(CAPACITY);
 	static int snooze;
 	
+	static Logger log = Logger.getLogger("Algorithm Queue");
+	
 	static {
-        ObjectifyService.register(AccelerometerData.class);
+        ObjectifyService.register(AccelerometerData.class); 
         ObjectifyService.register(Device.class);
     }
 	
@@ -69,6 +71,8 @@ public class AlgorithmQueue {
 			while(true){
 				snooze = DatastoreHandler.getSnooze();
 				if(snooze > 0){
+					log.info("got a snooze: " + snooze);
+					DatastoreHandler.resetSnooze();
 					a.snoozeAlert(snooze);
 				}
 				a.processData(q.deq());

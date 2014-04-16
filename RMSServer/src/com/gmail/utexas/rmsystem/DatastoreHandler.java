@@ -28,7 +28,10 @@ public class DatastoreHandler {
 			BufferedReader in = new BufferedReader(
 					new InputStreamReader(connection.getInputStream()));
 			String inputLine = in.readLine();
-			duration = Integer.parseInt(inputLine);			
+			if(duration == 0){
+				duration = Integer.parseInt(inputLine);
+			}
+			log.info("duration: " + duration);
 
 			while ((inputLine = in.readLine()) != null) {
 				response.append(inputLine);
@@ -74,4 +77,9 @@ public class DatastoreHandler {
 	public static int getSnooze(){
 		return duration;
 	}
+	
+	public static void resetSnooze(){
+		duration = 0;
+	}
+	
 }
