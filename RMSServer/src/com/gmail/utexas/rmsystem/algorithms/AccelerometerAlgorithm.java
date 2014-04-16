@@ -21,7 +21,6 @@ import com.gmail.utexas.rmsystem.models.RMSUser;
 public class AccelerometerAlgorithm {
 	private final int MAX_LOW = 50;
 	private final int MAX_HIGH = 50;
-//	private final int MAX_NORM = 2000;
 	private final int THRESH_HI = 2500;
 	private final int THRESH_LOW = 2200;
 	private final int REQSTEPS = 3;
@@ -69,6 +68,9 @@ public class AccelerometerAlgorithm {
 		if(snoozed && ((System.currentTimeMillis() - snoozeTimestamp) >= snoozeDuration)){
 			snoozed = false;
 			sentRoaming = false;
+			if(stepCount >= REQSTEPS && getBioStatus().equals(Biometrics.ASLEEP)){
+				sendAlert("sleepwalking");
+			}
 		}
 		//check if low end of a step
 		if(data <= THRESH_LOW){
@@ -106,10 +108,6 @@ public class AccelerometerAlgorithm {
 		//data is in normal range
 		else if(data < THRESH_HI && data > THRESH_LOW){
 			normCount++;
-//			if(normCount >= MAX_NORM){
-//				log.info("Too many vals in norm range!");
-//				resetData();
-//			}
 		}
 	}
 	
