@@ -89,7 +89,7 @@
     
     <servlet>
         <servlet-name>biometrics</servlet-name>
-        <servlet-class>com.gmail.utexas.rmsystem.BiometricsServlet</servlet-class>
+        <servlet-class>com.gmail.utexas.rmsystem.BiometricsInputServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>biometrics</servlet-name>
@@ -126,6 +126,24 @@
         <url-pattern>/dependent_status</url-pattern>
     </servlet-mapping>
     
+    
+    <servlet>
+        <servlet-name>awake</servlet-name>
+        <servlet-class>com.gmail.utexas.rmsystem.AwakeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>awake</servlet-name>
+        <url-pattern>/awake</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>asleep</servlet-name>
+        <servlet-class>com.gmail.utexas.rmsystem.AsleepServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>asleep</servlet-name>
+        <url-pattern>/asleep</url-pattern>
+    </servlet-mapping>    
     
     <welcome-file-list>
         <welcome-file>admin.jsp</welcome-file>

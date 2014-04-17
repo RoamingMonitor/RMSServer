@@ -14,12 +14,10 @@ public class Biometrics {
 	@Id private String deviceID;
 	
 	public Biometrics(){
-		status = AWAKE;
 	}
 	
 
 	public Biometrics(String device){
-		status = AWAKE;
 		deviceID = device;
 	}
 	

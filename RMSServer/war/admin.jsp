@@ -84,9 +84,9 @@
 		<table align="center">
 			<tr>
 				<td style="font-weight: bold; padding: 0 15px 0 15px"><a
-					href="/biometrics?type=asleep" class="btn btn-lg btn-default ${fn:escapeXml(asleep)}">Asleep</a></td>
+					href="/asleep" class="btn btn-lg btn-default ${fn:escapeXml(asleep)}">Asleep</a></td>
 				<td style="font-weight: bold; padding: 0 15px 0 15px"><a
-					href="/biometrics?type=awake" class="btn btn-lg btn-default ${fn:escapeXml(awake)}">Awake</a></td>
+					href="/awake" class="btn btn-lg btn-default ${fn:escapeXml(awake)}">Awake</a></td>
 				<td style="font-weight: bold; padding: 0 15px 0 15px"><a
 					href="/biometrics?type=badinput" class="btn btn-lg btn-default ${fn:escapeXml(badinput)}">Bad Input</a></td>
 				<td style="font-weight: bold; padding: 0 15px 0 15px"><a
