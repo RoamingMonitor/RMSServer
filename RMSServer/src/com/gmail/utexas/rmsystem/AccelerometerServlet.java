@@ -40,13 +40,7 @@ public class AccelerometerServlet extends HttpServlet{
 		}
 		
 		Device device = ofy().load().type(Device.class).id(deviceID).get();		
-				
-//		if(device == null){
-//			device = new Device(deviceID);
-//		}
-//		ofy().save().entity(device).now();
 		
-		//ArrayList<Integer> buffer = dataObject.getData();
 		ArrayList<Integer> buffer = new ArrayList<Integer>();
 		BufferedReader reader = req.getReader();		 
 	        try {

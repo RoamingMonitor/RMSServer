@@ -5,6 +5,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServlet;
@@ -33,8 +34,10 @@ public class DatastoreServlet extends HttpServlet{
 		
 		RMSUser user = ofy().load().type(RMSUser.class).id(LogMessageHandler.G_APP_DEBUG).get();
 		if(user.isSnooze()){			
-    		Settings settings = ofy().load().type(Settings.class).id(LogMessageHandler.G_APP_DEBUG).get();
+			log.setLevel(Level.INFO);			
+    		Settings settings = ofy().load().type(Settings.class).id(LogMessageHandler.G_APP_DEBUG).get();    		
     		writer.println(settings.snooze);
+    		log.info("Sent snooze signal to algorithms: "+settings.snooze);
 			user.setSnooze(false);
 	    	ofy().save().entity(user).now();
 		} else {

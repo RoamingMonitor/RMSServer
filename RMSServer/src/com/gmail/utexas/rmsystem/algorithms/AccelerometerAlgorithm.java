@@ -5,16 +5,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.mortbay.log.Log;
-
-import com.gmail.utexas.rmsystem.GCMHandler;
-import com.gmail.utexas.rmsystem.LogMessageHandler;
-import com.gmail.utexas.rmsystem.ManualStatusServlet;
 import com.gmail.utexas.rmsystem.models.Biometrics;
 import com.gmail.utexas.rmsystem.models.RMSUser;
 
@@ -116,8 +109,8 @@ public class AccelerometerAlgorithm {
 		log.info("Reseting accelerometer algorithm data");
 		highCount=lowCount=stepCount=normCount=0;
 		prelimOn = false;
-		detected = false;
-		//sentRoaming = false;
+		detected = false;		
+		sentRoaming = false;
 		setBioStatus("off");
 		setDependentStatus(RMSUser.SLEEPING);
 	}
@@ -197,8 +190,6 @@ public class AccelerometerAlgorithm {
 	}
 	
 	public void setDependentStatus(String status){
-		//status must be: "Sleeping", "Roaming", or "Sleepwalking"
-		if(!(status.equals(RMSUser.SLEEPING) || status.equals(RMSUser.ROAMING) || status.equals(RMSUser.SLEEPWALKING))) return;
 		log.setLevel(Level.INFO);
 		URL url = null;
 		try {
@@ -208,6 +199,7 @@ public class AccelerometerAlgorithm {
 			e.printStackTrace();
 		}
 		send(url);
+		
 	}
 	
 	public String send(URL url){
