@@ -42,7 +42,7 @@ public class AccelerometerAlgorithm {
 			sendAlert("sleepwalking");
 		}
 		//roaming!!!
-		if(stepCount >= REQSTEPS && !sentRoaming && getBioStatus().equals(Biometrics.AWAKE) ){
+		else if(stepCount >= REQSTEPS && !sentRoaming && !snoozed && getBioStatus().equals(Biometrics.AWAKE) ){
 			if(!detected){
 				detected = true;
 				detectionTimestamp = System.currentTimeMillis();
@@ -158,13 +158,12 @@ public class AccelerometerAlgorithm {
 		log.setLevel(Level.INFO);		
 		URL url = null;
 		try {
-//			System.out.println("Getting biometrics status");
 			url = new URL("http://rmsystem2014.appspot.com/biometrics");
 		}catch (MalformedURLException e){
 			e.printStackTrace();
 		}
 		String status = send(url);
-		//System.out.println("Current biometrics status: " + status);
+		//System.out.println("Retrieved biometrics status of: " + status);
 		return status;
 	}
 	
@@ -199,7 +198,6 @@ public class AccelerometerAlgorithm {
 			e.printStackTrace();
 		}
 		send(url);
-		
 	}
 	
 	public String send(URL url){
